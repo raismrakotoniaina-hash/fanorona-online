@@ -7,7 +7,7 @@ import {
   getVelaResultLabel, VELA_PHASE
 } from "./game/vela.js";
 import {
-  legalOfferMoves, legalVelaCaptures, applyVelaOffer, applyVelaCapture
+  createVelaBoard, legalOfferMoves, legalVelaCaptures, applyVelaOffer, applyVelaCapture
 } from "./game/vela-board.js";
 
 (() => {
@@ -137,7 +137,7 @@ import {
 
   function startVelaAfterRiatra(winner) {
     // Araka ny fitsipika nomen'ny mpikarakara: solaitrabe vaovao, vato feno ho an'ny roa tonta.
-    board = initialBoard();
+    board = createVelaBoard(winner);
     turn = winner;
     selected = null;
     turnContext = null;
