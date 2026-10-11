@@ -25,16 +25,17 @@ Hanangana sehatra Fanorona malagasy natao ho an'ny finday, misy lalao marina, AI
 
 ### Dingana 3 — Vela be
 
-**Sata:** misy ny fitantanana dingana sy scoring, ary nampiana logic manamarina ny fanolorana vato sy ny fakana ilay vato natolotra eo amin'ny solaitrabe nomena. Mbola tsy tafiditra amin'ny UI ny logic vaovao, ary tsy mbola voafaritra ao anaty code ny fametrahana vato fanombohana amin'ny Vela be.
+**Sata:** tafiditra ao amin'ny UI ny dingana voalohany sy faharoa. Rehefa vita ny Riatra dia solaitrabe vaovao no ampiasaina, samy manomboka amin'ny vato feno ny roa tonta. Ny mpandresy no manolotra vato, ny mpilalao Vela maka azy; rehefa dimy sisa ny mpandresy dia mitohy eo amin'io solaitrabe io ny dingana faharoa.
 - [ ] Hamafiso miaraka amin'ny mpilalao mahay ny antsipirian'ny fitsipika sy ny fiafaran'ny dingana tsirairay.
-- [ ] Ampiharo ny dingana voalohany: manolotra vato tsirairay tsy maka, ary tsy maintsy maka ny Vela.
-- [ ] Ampiharo ny dingana faharoa rehefa tonga amin'ny vato dimy ny mpanolotra.
-- [ ] Ampiharo ny famaritana hoe afaka Vela na tsy afaka Vela.
+- [x] Ampiharo ny dingana voalohany: manolotra vato tsirairay tsy maka, ary tsy maintsy maka ny Vela.
+- [x] Ampiharo ny dingana faharoa rehefa tonga amin'ny vato dimy ny mpanolotra.
+- [x] Ampiharo ny famaritana hoe afaka Vela na tsy afaka Vela.
 - [x] Mamorona fototra mitantana ny dingana Vela sy ny scoring (5–3 na 8–0).
 - [x] Manorata logic manamarina ny fanolorana vato sy ny fakana ilay vato natolotra amin'ny solaitrabe.
-- [ ] Ampifandraiso amin'ny UI ny dingana voalohany, ka ny hetsika tena izy no mampandroso ny session fa tsy bokotra fanisana.
-- [ ] Farito sy ampiharo ny fametrahana vato fanombohana amin'ny Vela be, miaraka amin'ny fanamarinana avy amin'ny mpilalao mahay.
-- [ ] Ampifandraiso amin'ny solaitrabe ny dingana faharoa sy ny famaritana hoe afaka Vela na tsy afaka Vela.
+- [x] Ampifandraiso amin'ny UI ny dingana voalohany, ka ny hetsika tena izy no mampandroso ny session fa tsy bokotra fanisana.
+- [x] Ampiharo ny solaitrabe vaovao misy vato feno ho an'ny roa tonta araka ny fanazavan'ny mpikarakara.
+- [x] Ampifandraiso amin'ny solaitrabe ny dingana faharoa sy ny famaritana hoe afaka Vela na tsy afaka Vela.
+- [ ] Hamarino amin'ny mpilalao Fanorona mahay fa mifanaraka amin'ny fitsipika eo an-toerana ny antsipirian'ny hetsika Vela.
 - [ ] Tehirizo amin'ny tantaran'ny match ny vokatry ny Riatra sy ny Vela.
 
 ### Dingana 4 — Kaonty sy lalao an-tserasera
