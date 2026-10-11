@@ -85,6 +85,7 @@ function captureOptions(board, from, to, player, blocked = new Set()) {
 
 export function legalMoves(board, player, from, context = null) {
   if (from < 0 || from >= board.length || board[from] !== player) return [];
+  if (context && Number.isInteger(context.piece) && context.piece !== from) return [];
   const candidates = [];
   const blocked = context ? context.captured : new Set();
   for (const n of neighbors(from)) {
