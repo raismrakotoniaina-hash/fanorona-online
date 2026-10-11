@@ -54,11 +54,11 @@ test("tsy mamela hetsika tsotra raha misy fakana vato", () => {
 test("la prise par retrait est détectée", () => {
   const board = Array(45).fill(null);
   board[indexOf(2, 2)] = LIGHT;
-  board[indexOf(2, 0)] = DARK;
+  board[indexOf(2, 1)] = DARK;
   const moves = legalMoves(board, LIGHT, indexOf(2, 2));
   const move = moves.find(m => m.to === indexOf(2, 3) && m.mode === "withdrawal");
   assert.ok(move);
-  assert.deepEqual(move.victims, [indexOf(2, 0)]);
+  assert.deepEqual(move.victims, [indexOf(2, 1)]);
 });
 
 test("une pièce ne peut pas aller sur une position occupée", () => {
