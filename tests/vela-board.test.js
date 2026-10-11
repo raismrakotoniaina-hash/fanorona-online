@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { LIGHT, DARK, indexOf, countPieces, initialBoard } from "../game/engine.js";
+import { LIGHT, DARK, indexOf, countPieces } from "../game/engine.js";
 import {
-  legalOfferMoves, legalVelaCaptures, applyVelaOffer, applyVelaCapture
+  createVelaBoard, legalOfferMoves, legalVelaCaptures, applyVelaOffer, applyVelaCapture
 } from "../game/vela-board.js";
 
 function offerPosition() {
@@ -60,10 +60,11 @@ test("mandà fakana tsy manala ilay vato natolotra", () => {
 });
 
 
-test("misy fanolorana ara-dalàna amin'ny solaitrabe Vela vaovao misy vato feno", () => {
-  const board = initialBoard();
-  assert.equal(countPieces(board).light, 22);
-  assert.equal(countPieces(board).dark, 22);
-  assert.ok(legalOfferMoves(board, LIGHT, DARK).length > 0);
-  assert.ok(legalOfferMoves(board, DARK, LIGHT).length > 0);
+test("misy fanolorana ara-dalàna amin'ny solaitrabe Vela vaovao ho an'ny mpandresy tsirairay", () => {
+  for (const offerPlayer of [LIGHT, DARK]) {
+    const board = createVelaBoard(offerPlayer);
+    assert.equal(countPieces(board).light, 22);
+    assert.equal(countPieces(board).dark, 22);
+    assert.ok(legalOfferMoves(board, offerPlayer, offerPlayer === LIGHT ? DARK : LIGHT).length > 0);
+  }
 });
