@@ -268,7 +268,7 @@ import {
       }
       turn = nextPlayer;
       if (!allLegalMoves(board, turn).length) {
-        const escaped = turn === velaSession.velaPlayer;
+        const escaped = turn === velaSession.riatraWinner;
         velaSession = completeVela(velaSession, escaped);
         gameOver = true;
         setMessage(escaped ? "Afaka Vela: tsy manana hetsika ara-dalàna ny mpilalao Vela." : "Tsy afaka Vela: tsy afaka mihetsika ny mpandresy Riatra.");
@@ -293,7 +293,7 @@ import {
     if (!nextMoves.length) {
       gameOver = true;
       setMessage("Tapitra ny Riatra: tsy manana hetsika ara-dalàna ny mpilalao manaraka.");
-      startVelaAfterRiatra(opponent(turn));
+      startVelaAfterRiatra(turn);
     } else {
       setMessage("Vita ny hetsika. Anjaran'ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
     }
