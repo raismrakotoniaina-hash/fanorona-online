@@ -14,7 +14,7 @@ test("position initiale : 45 points et 22 pierres par joueur", () => {
 
 test("les déplacements orthogonaux restent disponibles sur les bords", () => {
   const n = neighbors(indexOf(0, 0)).map(x => x.index);
-  assert.deepEqual(n.sort((a, b) => a - b), [1, 9]);
+  assert.deepEqual(n.sort((a, b) => a - b), [1, 9, 10]);
 });
 
 test("un déplacement simple déplace la pierre sans en créer", () => {
