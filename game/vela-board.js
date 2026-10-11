@@ -3,18 +3,34 @@ import {
 } from "./engine.js";
 
 /**
- * Creates a fresh full-set Vela board. The colors are swapped when DARK is
- * the offer player so the initial offer opportunities are equivalent.
+ * Creates a fresh full-set Vela board with 22 stones per player.
+ * The single empty point is repositioned until the opening offer can
+ * actually be captured, instead of assuming the Riatra layout works.
  */
 export function createVelaBoard(offerPlayer) {
   if (offerPlayer !== LIGHT && offerPlayer !== DARK) {
     throw new TypeError("offerPlayer must be 'light' or 'dark'");
   }
-  const board = initialBoard();
+
+  let oriented = initialBoard();
   if (offerPlayer === DARK) {
-    return board.reverse().map(piece => piece === LIGHT ? DARK : piece === DARK ? LIGHT : null);
+    oriented = oriented.slice().reverse().map(piece =>
+      piece === LIGHT ? DARK : piece === DARK ? LIGHT : null
+    );
   }
-  return board;
+
+  const emptyIndex = oriented.findIndex(piece => piece === null);
+  for (let candidate = 0; candidate < oriented.length; candidate += 1) {
+    if (candidate === emptyIndex) continue;
+    const board = oriented.slice();
+    board[emptyIndex] = board[candidate];
+    board[candidate] = null;
+    if (legalOfferMoves(board, offerPlayer, opponent(offerPlayer)).length > 0) {
+      return board;
+    }
+  }
+
+  throw new Error("Tsy nahita solaitrabe Vela misy fanolorana ara-dalàna.");
 }
 
 /**
