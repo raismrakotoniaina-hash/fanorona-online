@@ -8,19 +8,20 @@ Hanangana sehatra Fanorona malagasy natao ho an'ny finday, misy lalao marina, AI
 ### Dingana 1 — Fototra sy interface
 - [x] Mamorona pejy fandraisana amin'ny teny Malagasy.
 - [x] Mamorona endrika responsive ho an'ny finday.
-- [x] Mampiseho solaitrabe santatra 9 × 5.
+- [x] Mampiseho solaitrabe 9 × 5.
+- [x] Mampifandimby mpilalao roa amin'ny navigateur iray.
 - [ ] Hamarino amin'ny navigateur Android ny layout sy ny rohy.
 
 ### Dingana 2 — Fanorona Riatra game engine
 - [ ] Farito sy tehirizo ny topology marina amin'ny solaitrabe (toerana sy tsipika azo aleha).
-- [ ] Ampiharo ny fanombohan'ny lalao sy ny isan'ny vato.
-- [ ] Ampiharo ny hetsika ara-dalàna sy ny fanamarinana an-tery ny fakana vato.
-- [ ] Ampiharo ny fakana amin'ny fanatonana (approach) sy ny fialana (withdrawal).
-- [ ] Ampiharo ny fakana maromaro amin'ny anjaran'ny mpilalao iray.
-- [ ] Ampiharo ny fepetra tsy ahafahana miverina amin'ny toerana efa naleha mandritra ny fakana maromaro.
-- [ ] Manorata fitsapana ho an'ny toe-javatra ara-dalàna sy tsy ara-dalàna.
+- [x] Ampiharo ny fanombohan'ny lalao sy ny isan'ny vato.
+- [x] Ampiharo ny hetsika ara-dalàna sy ny fanamarinana an-tery ny fakana vato.
+- [x] Ampiharo ny fakana amin'ny fanatonana (approach) sy ny fialana (withdrawal).
+- [x] Ampiharo ny fakana maromaro amin'ny anjaran'ny mpilalao iray.
+- [x] Ampiharo ny fepetra tsy ahafahana miverina amin'ny toerana efa naleha mandritra ny fakana maromaro.
+- [x] Manorata fitsapana fototra ho an'ny toe-javatra ara-dalàna sy tsy ara-dalàna.
 
-**Fepetra hahavitana:** tsy afaka manova ny toetry ny lalao amin'ny hetsika tsy ara-dalàna ny mpilalao.
+**Sata:** vita ny dikan-teny voalohany; mbola mila fitsapana fanampiny sy fanamarinana ny topology amin'ny mpilalao mahay. Ny fitsapana mandeha amin'ny GitHub Actions dia manamarina tranga fototra, fa tsy mbola porofo fa feno avokoa ny fitsipika.
 
 ### Dingana 3 — Vela be
 - [ ] Hamafiso miaraka amin'ny mpilalao mahay ny antsipirian'ny fitsipika sy ny fiafaran'ny dingana tsirairay.
