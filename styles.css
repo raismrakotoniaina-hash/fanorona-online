@@ -74,3 +74,8 @@ h1{font-size:clamp(48px,6vw,78px);line-height:.99;margin:22px 0 22px;font-weight
 .vela-panel p{font-size:10px;color:var(--muted);line-height:1.8;margin:8px 0}
 .vela-panel .full-button{white-space:normal;text-align:left;line-height:1.5;margin-top:10px}
 .vela-panel .vela-score{color:var(--gold);font-weight:700;font-size:12px;margin-top:14px}
+
+
+/* Compte à rebours amin'ny faran'ny Riatra */
+.riatra-timer{margin:14px 0 0;padding:10px 13px;border:1px solid rgba(237,199,123,.42);border-radius:9px;background:rgba(237,199,123,.08);color:var(--gold);font-size:13px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.riatra-timer[hidden]{display:none}
