@@ -12,7 +12,6 @@ test("position initiale : 45 points et 22 pierres par joueur", () => {
   assert.equal(board[indexOf(2, 4)], null);
 });
 
-
 test("la rangée centrale alterne les couleurs de part et d'autre du centre vide", () => {
   const board = initialBoard();
   assert.deepEqual(
@@ -61,7 +60,6 @@ test("tsy mamela hetsika tsotra raha misy fakana vato", () => {
   assert.ok(moves.every(m => m.capture));
 });
 
-
 test("la prise par retrait est détectée", () => {
   const board = Array(45).fill(null);
   board[indexOf(2, 2)] = LIGHT;
@@ -70,6 +68,28 @@ test("la prise par retrait est détectée", () => {
   const move = moves.find(m => m.to === indexOf(2, 3) && m.mode === "withdrawal");
   assert.ok(move);
   assert.deepEqual(move.victims, [indexOf(2, 1)]);
+});
+
+test("une prise continue ne peut pas répéter immédiatement la même direction", () => {
+  const board = Array(45).fill(null);
+  board[indexOf(2, 1)] = LIGHT;
+  board[indexOf(2, 3)] = DARK;
+  board[indexOf(2, 4)] = DARK;
+  board[indexOf(1, 2)] = DARK;
+
+  const first = legalMoves(board, LIGHT, indexOf(2, 1))
+    .find(m => m.to === indexOf(2, 2) && m.mode === "approach");
+  assert.ok(first);
+  const afterFirst = applyMove(board, first, LIGHT);
+  const context = {
+    captured: new Set(first.victims),
+    visited: new Set([first.from, first.to]),
+    lastDirection: { dr: 0, dc: 1 }
+  };
+  const next = legalMoves(afterFirst, LIGHT, first.to, context);
+
+  assert.equal(next.some(m => m.to === indexOf(2, 3)), false);
+  assert.ok(next.some(m => m.to === indexOf(3, 2) && m.mode === "withdrawal"));
 });
 
 test("une pièce ne peut pas aller sur une position occupée", () => {
