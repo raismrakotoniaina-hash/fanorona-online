@@ -25,6 +25,9 @@ import {
   const velaOfferButton = document.getElementById("vela-offer-taken");
   const velaEscapedButton = document.getElementById("vela-escaped");
   const velaFailedButton = document.getElementById("vela-failed");
+  const boardKicker = document.querySelector(".board-kicker");
+  const boardHeading = document.querySelector(".board-head h3");
+  const riatraTimer = document.getElementById("riatra-timer");
   const ROWS = 5;
   const COLS = 9;
   let board = initialBoard();
@@ -34,8 +37,50 @@ import {
   let gameOver = false;
   let velaSession = null;
   let velaOfferedIndex = null;
+  let riatraDeadline = null;
+  let riatraTimerInterval = null;
 
   if (year) year.textContent = String(new Date().getFullYear());
+
+  function stopRiatraTimer() {
+    if (riatraTimerInterval !== null) {
+      clearInterval(riatraTimerInterval);
+      riatraTimerInterval = null;
+    }
+    riatraDeadline = null;
+    if (riatraTimer) riatraTimer.hidden = true;
+  }
+
+  function updateRiatraTimer() {
+    if (riatraDeadline === null || gameOver || velaSession) return;
+    const secondsLeft = Math.max(0, Math.ceil((riatraDeadline - Date.now()) / 1000));
+    if (riatraTimer) {
+      const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
+      const seconds = String(secondsLeft % 60).padStart(2, "0");
+      riatraTimer.textContent = "Fotoana sisa amin’ny Riatra: " + minutes + ":" + seconds;
+      riatraTimer.hidden = false;
+    }
+    if (secondsLeft === 0) {
+      stopRiatraTimer();
+      gameOver = true;
+      selected = null;
+      turnContext = null;
+      if (stopCaptureButton) stopCaptureButton.hidden = true;
+      setMessage("TAPITRA NY FOTOANA — SAHALA NY RIATRA! Isa 2 avy: Fotsy 2 — Mainty 2. Tsy averina ny lalao ary tsy misy Vela.");
+      renderBoard();
+    }
+  }
+
+  function startRiatraTimerIfNeeded() {
+    if (velaSession || gameOver || riatraDeadline !== null) return;
+    const pieces = countPieces(board);
+    if (pieces.light > 5 && pieces.dark > 5) return;
+    riatraDeadline = Date.now() + 5 * 60 * 1000;
+    if (riatraTimer) riatraTimer.hidden = false;
+    updateRiatraTimer();
+    riatraTimerInterval = setInterval(updateRiatraTimer, 250);
+    setMessage("Vitsy vato sisa amin’ny Riatra. Nanomboka ny compte à rebours 5 minitra; raha tapitra dia sahala ary isa 2 avy.");
+  }
 
   function pointLabel(i) {
     const { row, col } = coordinates(i);
@@ -99,6 +144,8 @@ import {
   }
 
   function renderVelaPanel() {
+    if (boardKicker) boardKicker.textContent = velaSession ? "VELA" : "FANORONA RIATRA";
+    if (boardHeading) boardHeading.textContent = velaSession ? "Vela be" : "Lalao fanazarana";
     if (!velaPanel) return;
     velaPanel.hidden = !velaSession;
     if (!velaSession) return;
@@ -137,7 +184,8 @@ import {
   }
 
   function startVelaAfterRiatra(winner) {
-    // Araka ny fitsipika nomen'ny mpikarakara: solaitrabe vaovao, vato feno ho an'ny roa tonta.
+    stopRiatraTimer();
+    // Vela dia manomboka amin’ilay filaharana fanombohana mahazatra, vato 22 avy.
     board = createVelaBoard(winner);
     turn = winner;
     selected = null;
@@ -193,6 +241,7 @@ import {
   }
 
   if (remaining[nextPlayer] === 0) {
+    stopRiatraTimer();
     gameOver = true;
     setMessage("Tapitra ny Riatra! Mandresy ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
     startVelaAfterRiatra(turn);
@@ -218,7 +267,10 @@ import {
       startVelaAfterRiatra(otherPlayer);
     }
   } else {
-    setMessage("Vita ny hetsika. Anjaran'ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
+    startRiatraTimerIfNeeded();
+    if (riatraDeadline === null) {
+      setMessage("Vita ny hetsika. Anjaran'ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
+    }
   }
   renderBoard();
   }
@@ -358,6 +410,7 @@ import {
     turnContext = null;
     if (stopCaptureButton) stopCaptureButton.hidden = true;
     gameOver = false;
+    stopRiatraTimer();
     velaSession = null;
     velaOfferedIndex = null;
     renderVelaPanel();
