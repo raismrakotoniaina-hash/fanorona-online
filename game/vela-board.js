@@ -3,34 +3,14 @@ import {
 } from "./engine.js";
 
 /**
- * Creates a fresh full-set Vela board with 22 stones per player.
- * The single empty point is repositioned until the opening offer can
- * actually be captured, instead of assuming the Riatra layout works.
+ * Vela starts with the exact standard Fanorona opening: 22 stones each
+ * and the centre point empty. The offer move is made on this same layout.
  */
 export function createVelaBoard(offerPlayer) {
   if (offerPlayer !== LIGHT && offerPlayer !== DARK) {
     throw new TypeError("offerPlayer must be 'light' or 'dark'");
   }
-
-  let oriented = initialBoard();
-  if (offerPlayer === DARK) {
-    oriented = oriented.slice().reverse().map(piece =>
-      piece === LIGHT ? DARK : piece === DARK ? LIGHT : null
-    );
-  }
-
-  const emptyIndex = oriented.findIndex(piece => piece === null);
-  for (let candidate = 0; candidate < oriented.length; candidate += 1) {
-    if (candidate === emptyIndex) continue;
-    const board = oriented.slice();
-    board[emptyIndex] = board[candidate];
-    board[candidate] = null;
-    if (legalOfferMoves(board, offerPlayer, opponent(offerPlayer)).length > 0) {
-      return board;
-    }
-  }
-
-  throw new Error("Tsy nahita solaitrabe Vela misy fanolorana ara-dalàna.");
+  return initialBoard();
 }
 
 /**
@@ -56,11 +36,11 @@ export function legalOfferMoves(board, offerPlayer, velaPlayer) {
   return offers;
 }
 
-/** Legal captures for the Vela player that actually take the offered stone. */
+/** Vela phase 1 removes exactly one stone: the offered stone must be first in the capture line. */
 export function legalVelaCaptures(board, velaPlayer, offeredIndex) {
-  return allLegalMoves(board, velaPlayer).filter(move =>
-    move.capture && move.victims.length === 1 && move.victims[0] === offeredIndex
-  );
+  return allLegalMoves(board, velaPlayer)
+    .filter(move => move.capture && move.victims[0] === offeredIndex)
+    .map(move => ({ ...move, victims: [offeredIndex] }));
 }
 
 export function applyVelaOffer(board, move, offerPlayer, velaPlayer) {
