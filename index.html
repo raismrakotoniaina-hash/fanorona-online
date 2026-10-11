@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="mg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <meta name="description" content="Fanorona Online — lalao Fanorona malagasy, AI ary fifaninanana an-tserasera.">
+  <title>Fanorona Online — Lalao malagasy</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Fanorona Online pejy fandraisana">
+      <span class="brand-mark">F</span>
+      <span><strong>Fanorona</strong><small>ONLINE · MALAGASY</small></span>
+    </a>
+    <nav class="nav-links" aria-label="Fikarohana">
+      <a href="#lalao">Lalao</a>
+      <a href="#fifaninanana">Fifaninanana</a>
+      <a href="#fitsipika">Fitsipika</a>
+    </nav>
+    <a class="top-cta" href="#lalao">Hanomboka <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="live-dot"></span> LOVA MALAGASY · VANIM-POTOANA VAOVAO</div>
+        <h1>Ny paikady.<br><span>Ny lova.</span><br>Ny Fanorona.</h1>
+        <p>Lalao Fanorona malagasy, entina amin'ny sehatra an-tserasera. Manaova fanazaran-tena, miomàna amin'ny fifaninanana, ary asehoy ny fahaizanao.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#lalao">Hijery ny solaitrabe <span>→</span></a>
+          <a class="button button-quiet" href="#fitsipika">Hahafantatra ny fitsipika</a>
+        </div>
+        <div class="trust-row">
+          <span><b class="trust-icon">♟</b> Lalao paikady</span>
+          <span><b class="trust-icon">⌁</b> Vela be</span>
+          <span><b class="trust-icon">♜</b> Fifaninanana</span>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Sary an'ohatra solaitrabe Fanorona">
+        <div class="art-glow"></div>
+        <div class="art-card">
+          <div class="art-top"><span>SOLAITRABE</span><span class="art-status"><i></i> FANORONA</span></div>
+          <div class="decor-board" id="decor-board" aria-hidden="true"></div>
+          <div class="art-bottom"><span>PAIKADY · FAHARETANA · LOVA</span><span>MG</span></div>
+        </div>
+        <div class="floating-note"><span class="note-icon">✦</span><span><strong>Avy amin'ny lova</strong><small>Natao ho an'ny taranaka vaovao</small></span></div>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Ny sehatra">
+      <div><strong>01</strong><span>Lalao nentim-paharazana</span></div>
+      <div><strong>AI</strong><span>Mpifanandrina marani-tsaina — ho avy</span></div>
+      <div><strong>MG</strong><span>Sehatra amin'ny teny Malagasy</span></div>
+      <div><strong>∞</strong><span>Paikady tsy manam-petra</span></div>
+    </section>
+
+    <section class="play-section section" id="lalao">
+      <div class="section-heading">
+        <div><div class="eyebrow">NY DINGANA VOALOHANY</div><h2>Midira amin'ny <span>lalao.</span></h2></div>
+        <p>Ity no solaitrabe santatra. Ampidirina tsikelikely ny fitsipika feno sy ny fanamarinana ny hetsika alohan'ny lalao tena izy.</p>
+      </div>
+      <div class="game-layout">
+        <div class="board-panel">
+          <div class="board-head"><div><span class="board-kicker">FANORONA RIATRA</span><h3>Solaitrabe fanazarana</h3></div><span class="prototype-pill"><i></i> SANTATRA</span></div>
+          <div class="board-wrap"><div class="game-board" id="game-board" role="group" aria-label="Solaitrabe Fanorona"></div></div>
+          <div class="board-legend"><span><i class="stone stone-light"></i> Vato fotsy</span><span><i class="stone stone-dark"></i> Vato mainty</span><span class="legend-note">Solaitrabe 9 × 5</span></div>
+        </div>
+        <aside class="game-aside">
+          <div class="aside-icon">♟</div>
+          <div class="eyebrow">FANAZARAN-TENA</div>
+          <h3>Atombohy amin'ny paikady.</h3>
+          <p>Ny lalao azo kitihina sy ny fitsipika manamarina ny hetsika no dingana manaraka. Tsy mbola mandefa hetsika amin'ny mpilalao hafa ity santatra ity.</p>
+          <div class="feature-line"><span>01</span><div><strong>Solaitrabe 45 toerana</strong><small>Endrika mahazatra 9 × 5</small></div></div>
+          <div class="feature-line"><span>02</span><div><strong>Fitsipika marina</strong><small>Hetsika sy fakana vato voasedra</small></div></div>
+          <div class="feature-line"><span>03</span><div><strong>Multiplayer</strong><small>Hampiana rehefa vonona ny backend</small></div></div>
+          <button class="button button-outline full-button" id="reset-board" type="button">Avereno ny solaitrabe <span>↻</span></button>
+          <p class="small-note" id="board-message" role="status">Solaitrabe santatra — mbola tsy mandeha ny hetsika.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="features section" id="fifaninanana">
+      <div class="section-heading">
+        <div><div class="eyebrow">NY TETIKASA</div><h2>Mihoatra noho ny <span>lalao.</span></h2></div>
+        <p>Ny tanjona dia sehatra azo itokisana ho an'ny mpilalao sy ny mpikarakara fifaninanana.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card"><div class="card-number">01 / LALAO</div><div class="card-symbol">⌘</div><h3>Fanorona Riatra</h3><p>Hatsangana ny game engine, ny fanamarinana hetsika, ary ny fitsapana mba hanajana ny fitsipika.</p><span class="card-status">DINGANA MANARAKA</span></article>
+        <article class="feature-card feature-card-highlight"><div class="card-number">02 / VELA BE</div><div class="card-symbol">✧</div><h3>Fomba Vela be</h3><p>Hampidirina misaraka ny dingana roa sy ny kajy vokatra araka ny fitsipika nifanarahana amin'ny fifaninanana.</p><span class="card-status">VOALAMINA HO AMIN'NY BUILD</span></article>
+        <article class="feature-card"><div class="card-number">03 / TOURNOI</div><div class="card-symbol">♜</div><h3>Fifaninanana</h3><p>Fisoratana anarana, fandaminana araka ny isan'ny mpandray anjara, vokatra ary tantara azo jerena.</p><span class="card-status">DINGANA MANARAKA</span></article>
+      </div>
+    </section>
+
+    <section class="rules-banner section" id="fitsipika">
+      <div><div class="eyebrow">FAHITSIANA VOALOHANY</div><h2>Ny fitsipika no <span>fototra.</span></h2><p>Tsy havoaka ho lalao fifaninanana ny rafitra raha tsy voasedra ny fitsipika, ny Vela be, ary ny kajy vokatra. Ny scoring manokana amin'ny tournoi dia hambara mazava amin'ny mpandray anjara.</p></div>
+      <div class="rules-seal"><span>LOVA</span><strong>MG</strong><span>PAIKADY</span></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="brand footer-brand" href="#"><span class="brand-mark">F</span><span><strong>Fanorona</strong><small>ONLINE · MALAGASY</small></span></a>
+    <p>Mitahiry ny lova. Manangana ny ho avy.</p>
+    <span class="footer-copy">© <span id="year"></span> Fanorona Online</span>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>
