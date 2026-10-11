@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { LIGHT, DARK, indexOf, countPieces } from "../game/engine.js";
+import { LIGHT, DARK, indexOf, countPieces, initialBoard } from "../game/engine.js";
 import {
   legalOfferMoves, legalVelaCaptures, applyVelaOffer, applyVelaCapture
 } from "../game/vela-board.js";
@@ -57,4 +57,13 @@ test("mandà fakana tsy manala ilay vato natolotra", () => {
   const afterOffer = applyVelaOffer(board, offer, LIGHT, DARK);
   const unrelated = { from: indexOf(2, 1), to: indexOf(1, 1), capture: false, mode: null, victims: [] };
   assert.throws(() => applyVelaCapture(afterOffer, unrelated, DARK, indexOf(2, 3)));
+});
+
+
+test("misy fanolorana ara-dalàna amin'ny solaitrabe Vela vaovao misy vato feno", () => {
+  const board = initialBoard();
+  assert.equal(countPieces(board).light, 22);
+  assert.equal(countPieces(board).dark, 22);
+  assert.ok(legalOfferMoves(board, LIGHT, DARK).length > 0);
+  assert.ok(legalOfferMoves(board, DARK, LIGHT).length > 0);
 });
