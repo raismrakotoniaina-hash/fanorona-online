@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import {
   createVelaSession, recordOfferTaken, completeVela, getVelaResultLabel, VELA_PHASE
 } from "../game/vela.js";
+import { initialBoard, countPieces, LIGHT, DARK, indexOf } from "../game/engine.js";
+import { createVelaBoard, legalOfferMoves, legalVelaCaptures } from "../game/vela-board.js";
 
 test("manomboka amin'ny dingana fanolorana raha mihoatra ny dimy ny vato", () => {
   const s = createVelaSession({ riatraWinner: "light", winnerPiecesAfterRiatra: 9 });
@@ -53,4 +55,34 @@ test("tsy mamela hampiditra vokatra alohan'ny dingana faharoa", () => {
 
 test("mandà isa vato tsy mety", () => {
   assert.throws(() => createVelaSession({ riatraWinner: "light", winnerPiecesAfterRiatra: 4 }));
+});
+
+
+test("Vela starts with the exact standard setup and 22 stones each", () => {
+  const expected = initialBoard();
+  for (const player of [LIGHT, DARK]) {
+    const board = createVelaBoard(player);
+    assert.deepEqual(board, expected);
+    assert.deepEqual(countPieces(board), { light: 22, dark: 22 });
+    assert.equal(board[indexOf(2, 4)], null);
+  }
+});
+
+test("the Vela opening offer can be captured from the unchanged standard setup", () => {
+  const board = createVelaBoard(LIGHT);
+  const offers = legalOfferMoves(board, LIGHT, DARK);
+  assert.ok(offers.length > 0);
+  assert.ok(offers.some(move => move.to === indexOf(2, 4)));
+});
+
+test("Vela phase one removes exactly one offered stone even when a line contains more", () => {
+  const board = createVelaBoard(LIGHT);
+  const offer = legalOfferMoves(board, LIGHT, DARK).find(move => move.to === indexOf(2, 4));
+  assert.ok(offer);
+  const afterOffer = board.slice();
+  afterOffer[offer.to] = LIGHT;
+  afterOffer[offer.from] = null;
+  const captures = legalVelaCaptures(afterOffer, DARK, offer.to);
+  assert.ok(captures.length > 0);
+  assert.ok(captures.every(move => move.victims.length === 1 && move.victims[0] === offer.to));
 });
