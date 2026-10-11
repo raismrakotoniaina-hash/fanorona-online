@@ -1,0 +1,57 @@
+# Lalana fampandrosoana — Fanorona Online
+
+## Tanjona
+Hanangana sehatra Fanorona malagasy natao ho an'ny finday, misy lalao marina, AI, lalao amin'ny mpilalao hafa, ary fifaninanana azo tantanana.
+
+## Dingana sy fepetra hahavitana
+
+### Dingana 1 — Fototra sy interface
+- [x] Mamorona pejy fandraisana amin'ny teny Malagasy.
+- [x] Mamorona endrika responsive ho an'ny finday.
+- [x] Mampiseho solaitrabe santatra 9 × 5.
+- [ ] Hamarino amin'ny navigateur Android ny layout sy ny rohy.
+
+### Dingana 2 — Fanorona Riatra game engine
+- [ ] Farito sy tehirizo ny topology marina amin'ny solaitrabe (toerana sy tsipika azo aleha).
+- [ ] Ampiharo ny fanombohan'ny lalao sy ny isan'ny vato.
+- [ ] Ampiharo ny hetsika ara-dalàna sy ny fanamarinana an-tery ny fakana vato.
+- [ ] Ampiharo ny fakana amin'ny fanatonana (approach) sy ny fialana (withdrawal).
+- [ ] Ampiharo ny fakana maromaro amin'ny anjaran'ny mpilalao iray.
+- [ ] Ampiharo ny fepetra tsy ahafahana miverina amin'ny toerana efa naleha mandritra ny fakana maromaro.
+- [ ] Manorata fitsapana ho an'ny toe-javatra ara-dalàna sy tsy ara-dalàna.
+
+**Fepetra hahavitana:** tsy afaka manova ny toetry ny lalao amin'ny hetsika tsy ara-dalàna ny mpilalao.
+
+### Dingana 3 — Vela be
+- [ ] Hamafiso miaraka amin'ny mpilalao mahay ny antsipirian'ny fitsipika sy ny fiafaran'ny dingana tsirairay.
+- [ ] Ampiharo ny dingana voalohany: manolotra vato tsirairay tsy maka, ary tsy maintsy maka ny Vela.
+- [ ] Ampiharo ny dingana faharoa rehefa tonga amin'ny vato dimy ny mpanolotra.
+- [ ] Ampiharo ny famaritana hoe afaka Vela na tsy afaka Vela.
+- [ ] Tehirizo misaraka ny vokatry ny Riatra sy ny Vela.
+
+### Dingana 4 — Kaonty sy lalao an-tserasera
+- [ ] Safidio sy amboary ny backend (ohatra Supabase).
+- [ ] Ampidiro ny kaonty sy ny session.
+- [ ] Ataovy ao amin'ny server ny fanamarinana hetsika rehetra.
+- [ ] Ampidiro ny lalao mifanatrika sy ny fifandraisana indray rehefa tapaka ny internet.
+- [ ] Tehirizo ny tantaran'ny lalao sy ny valiny.
+
+### Dingana 5 — Fifaninanana
+- [ ] Fisoratana anarana sy fanidiana fisoratana anarana.
+- [ ] Fotoana fanomanana aorian'ny fisoratana anarana.
+- [ ] Safidy format mifanaraka amin'ny isan'ny mpilalao.
+- [ ] Famoahana ny fitsipika sy ny fandaharam-potoana alohan'ny hanombohana.
+- [ ] Fitantanana match, vokatra, fifandirana ary audit log.
+- [ ] Fitsapana fifaninanana maimaim-poana alohan'ny hampidirana vola.
+
+### Dingana 6 — Fandoavam-bola sy loka
+- [ ] Hamarino ny fepetra ara-dalàna eto Madagasikara.
+- [ ] Hamarino ny fomba fandoavam-bola, ny sarany, ny fanamarinana ny fandoavana ary ny famerenam-bola.
+- [ ] Farito mialoha ny vola miditra, ny fandaniana, ny loka ary ny tahiry.
+- [ ] Aza manokatra fifaninanana misy saram-pidirana raha tsy vita ireo fanamarinana ireo.
+
+## Fanapahan-kevitra ara-teknika
+- Tsy mila VPS amin'ny prototype static voalohany.
+- Ny AI Fanorona dia tokony hampiasa algorithm sy fanombanana manokana; tsy voatery handoa API AI ivelany.
+- Ny navigateur dia tsy tokony ho loharano farany amin'ny valin'ny lalao: ny server no manamarina ny hetsika sy ny vokatra.
+- Tsy tehirizina ao amin'ny frontend ny secret keys.
