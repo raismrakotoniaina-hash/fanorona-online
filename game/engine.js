@@ -91,6 +91,9 @@ export function legalMoves(board, player, from, context = null) {
     const to = n.index;
     if (board[to] !== null) continue;
     if (context && context.visited.has(to)) continue;
+    // Amin'ny fakana mitohy, tsy azo averina avy hatrany ny tari-dalana teo aloha.
+    if (context && context.lastDirection &&
+        n.dr === context.lastDirection.dr && n.dc === context.lastDirection.dc) continue;
     const options = captureOptions(board, from, to, player, blocked);
     if (options.length) {
       for (const option of options) candidates.push({ from, to, capture: true, mode: option.mode, victims: option.victims });
