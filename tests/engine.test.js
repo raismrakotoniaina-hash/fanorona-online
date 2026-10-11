@@ -27,6 +27,15 @@ test("les déplacements orthogonaux restent disponibles sur les bords", () => {
   assert.deepEqual(n.sort((a, b) => a - b), [1, 9, 10]);
 });
 
+test("les diagonales ne sont légales que depuis les intersections fortes", () => {
+  const board = Array(45).fill(null);
+  board[indexOf(1, 1)] = LIGHT; // weak point: diagonals not drawn
+  assert.equal(legalMoves(board, LIGHT, indexOf(1, 1)).some(m => m.to === indexOf(0, 0)), false);
+  board.fill(null);
+  board[indexOf(1, 2)] = LIGHT; // strong point: diagonal is drawn
+  assert.ok(legalMoves(board, LIGHT, indexOf(1, 2)).some(m => m.to === indexOf(0, 1)));
+});
+
 test("un déplacement simple déplace la pierre sans en créer", () => {
   const board = Array(45).fill(null);
   board[indexOf(0, 0)] = LIGHT;
@@ -90,6 +99,35 @@ test("une prise continue ne peut pas répéter immédiatement la même direction
 
   assert.equal(next.some(m => m.to === indexOf(2, 3)), false);
   assert.ok(next.some(m => m.to === indexOf(3, 2) && m.mode === "withdrawal"));
+});
+
+test("une prise par retrait capture la ligne derrière la position de départ", () => {
+  const board = Array(45).fill(null);
+  board[indexOf(2, 2)] = LIGHT;
+  board[indexOf(2, 1)] = DARK;
+  board[indexOf(2, 0)] = DARK;
+  const move = legalMoves(board, LIGHT, indexOf(2, 2))
+    .find(m => m.to === indexOf(2, 3) && m.mode === "withdrawal");
+  assert.ok(move);
+  assert.deepEqual(move.victims, [indexOf(2, 1), indexOf(2, 0)]);
+});
+
+test("une chaîne de prises doit continuer avec le même pion", () => {
+  const board = Array(45).fill(null);
+  board[indexOf(2, 1)] = LIGHT;
+  board[indexOf(2, 3)] = DARK;
+  board[indexOf(1, 2)] = DARK;
+  const first = legalMoves(board, LIGHT, indexOf(2, 1))
+    .find(m => m.to === indexOf(2, 2) && m.mode === "approach");
+  assert.ok(first);
+  const after = applyMove(board, first, LIGHT);
+  const context = {
+    captured: new Set(first.victims),
+    visited: new Set([first.from, first.to]),
+    lastDirection: { dr: 0, dc: 1 },
+    piece: first.to
+  };
+  assert.deepEqual(legalMoves(after, LIGHT, indexOf(0, 0), context), []);
 });
 
 test("une pièce ne peut pas aller sur une position occupée", () => {
