@@ -202,9 +202,21 @@ import {
   turn = nextPlayer;
   const nextMoves = allLegalMoves(board, turn);
   if (!nextMoves.length) {
-    gameOver = true;
-    setMessage("Tapitra ny Riatra: tsy manana hetsika ara-dalàna ny mpilalao manaraka.");
-    startVelaAfterRiatra(turn);
+    const otherPlayer = opponent(turn);
+    const otherMoves = allLegalMoves(board, otherPlayer);
+    if (!otherMoves.length) {
+      // Sahala amin'ny Riatra: samy tsy manana hetsika ara-dalàna ny roa tonta.
+      gameOver = true;
+      selected = null;
+      turnContext = null;
+      renderVelaPanel();
+      setMessage("SAHALA NY RIATRA! Samy tsy manana hetsika ara-dalàna ny mpilalao roa. Isa 2 avy: Fotsy 2 — Mainty 2. Tsy misy Vela amin'ity lalao ity satria tsy nisy mpandresy tamin'ny Riatra.");
+    } else {
+      // Raha ny mpilalao tokony hilalao no tsy afaka mihetsika, mandresy ny mpifanandrina aminy.
+      gameOver = true;
+      setMessage("Tapitra ny Riatra: tsy afaka mihetsika ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ". Mandresy ny vato " + (otherPlayer === LIGHT ? "fotsy" : "mainty") + ".");
+      startVelaAfterRiatra(otherPlayer);
+    }
   } else {
     setMessage("Vita ny hetsika. Anjaran'ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
   }
