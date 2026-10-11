@@ -213,7 +213,7 @@ import {
     if (!nextMoves.length) {
       gameOver = true;
       setMessage("Tapitra ny Riatra: tsy manana hetsika ara-dalàna ny mpilalao manaraka.");
-      startVelaAfterRiatra(turn);
+      startVelaAfterRiatra(opponent(turn));
     } else {
       setMessage("Vita ny hetsika. Anjaran'ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
     }
