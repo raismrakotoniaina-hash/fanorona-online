@@ -28,6 +28,12 @@ import {
   const boardKicker = document.querySelector(".board-kicker");
   const boardHeading = document.querySelector(".board-head h3");
   const riatraTimer = document.getElementById("riatra-timer");
+  const moveChoice = document.createElement("div");
+  moveChoice.className = "move-choice";
+  moveChoice.hidden = true;
+  moveChoice.setAttribute("role", "group");
+  moveChoice.setAttribute("aria-label", "Safidio ny lalana fakana vato");
+  if (message) message.insertAdjacentElement("afterend", moveChoice);
   const ROWS = 5;
   const COLS = 9;
   let board = initialBoard();
@@ -74,7 +80,7 @@ import {
   function startRiatraTimerIfNeeded() {
     if (velaSession || gameOver || riatraDeadline !== null) return;
     const pieces = countPieces(board);
-    if (pieces.light > 5 && pieces.dark > 5) return;
+    if (pieces.light > 5 || pieces.dark > 5) return;
     riatraDeadline = Date.now() + 5 * 60 * 1000;
     if (riatraTimer) riatraTimer.hidden = false;
     updateRiatraTimer();
@@ -275,54 +281,39 @@ import {
   renderBoard();
   }
 
-  function handlePoint(i) {
-    if (gameOver) return;
-    if (selected === null) {
-      if (board[i] !== turn) {
-        setMessage("Anjaran'ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ". Kitiho aloha ny vato anao.");
-        return;
-      }
-      const moves = availableMoves(i);
-      if (!moves.length) {
-        setMessage("Tsy afaka mihetsika io vato io amin'izao fotoana izao.");
-        return;
-      }
-      selected = i;
-      setMessage("Safidio ny toerana haleha. Ny fakana vato dia tsy maintsy atao raha misy.");
-      renderBoard();
-      return;
-    }
+  function hideMoveChoice() {
+    moveChoice.hidden = true;
+    moveChoice.replaceChildren();
+  }
 
-    if (i === selected) {
-      if (turnContext) {
-        setMessage("Mbola misy fakana mitohy. Ampiasao ny bokotra “Atsaharo ny fakana” raha te hamarana ny anjaranao ianao.");
-      } else {
-        selected = null;
-      }
-      renderBoard();
-      return;
-    }
+  function showMoveChoice(options) {
+    moveChoice.replaceChildren();
+    moveChoice.hidden = false;
+    const title = document.createElement("p");
+    title.textContent = "Misy lalana maromaro azo isafidianana. Safidio izay tianao:";
+    moveChoice.appendChild(title);
+    options.forEach((move, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "button button-outline";
+      button.textContent = move.mode === "approach"
+        ? "Lalana " + (index + 1) + " — fakana avy eo aloha"
+        : move.mode === "withdrawal"
+          ? "Lalana " + (index + 1) + " — fakana avy ao aoriana"
+          : "Lalana " + (index + 1);
+      button.addEventListener("click", () => commitMove(move));
+      moveChoice.appendChild(button);
+    });
+    const cancel = document.createElement("button");
+    cancel.type = "button";
+    cancel.className = "button button-quiet";
+    cancel.textContent = "Aoka aloha";
+    cancel.addEventListener("click", hideMoveChoice);
+    moveChoice.appendChild(cancel);
+  }
 
-    if (board[i] === turn) {
-      const moves = availableMoves(i);
-      if (moves.length) {
-        selected = i;
-        renderBoard();
-        return;
-      }
-    }
-
-    let options = availableMoves(selected).filter(m => m.to === i);
-    if (!options.length) {
-      setMessage("Tsy ara-dalàna io hetsika io. Safidio ny toerana voamarika.");
-      return;
-    }
-
-    let move = options[0];
-    if (options.length > 1 && options.some(m => m.mode === "approach") && options.some(m => m.mode === "withdrawal")) {
-      const chooseApproach = window.confirm("Afaka misafidy fomba roa ianao. OK = fakana avy eo aloha (approach); Cancel = fakana avy ao aoriana (withdrawal).");
-      move = options.find(m => m.mode === (chooseApproach ? "approach" : "withdrawal")) || move;
-    }
+  function commitMove(move) {
+    hideMoveChoice();
     const movingFrom = selected;
     const oldContext = turnContext;
     selected = null;
@@ -381,6 +372,56 @@ import {
     }
 
     completeTurn();
+  }
+
+  function handlePoint(i) {
+    if (gameOver || !moveChoice.hidden) return;
+    if (selected === null) {
+      if (board[i] !== turn) {
+        setMessage("Anjaran'ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ". Kitiho aloha ny vato anao.");
+        return;
+      }
+      const moves = availableMoves(i);
+      if (!moves.length) {
+        setMessage("Tsy afaka mihetsika io vato io amin'izao fotoana izao.");
+        return;
+      }
+      selected = i;
+      setMessage("Safidio ny toerana haleha. Ny fakana vato dia tsy maintsy atao raha misy.");
+      renderBoard();
+      return;
+    }
+
+    if (i === selected) {
+      if (turnContext) {
+        setMessage("Mbola misy fakana mitohy. Ampiasao ny bokotra “Atsaharo ny fakana” raha te hamarana ny anjaranao ianao.");
+      } else {
+        selected = null;
+      }
+      renderBoard();
+      return;
+    }
+
+    if (board[i] === turn) {
+      const moves = availableMoves(i);
+      if (moves.length) {
+        selected = i;
+        renderBoard();
+        return;
+      }
+    }
+
+    let options = availableMoves(selected).filter(m => m.to === i);
+    if (!options.length) {
+      setMessage("Tsy ara-dalàna io hetsika io. Safidio ny toerana voamarika.");
+      return;
+    }
+
+    if (options.length > 1) {
+      showMoveChoice(options);
+      return;
+    }
+    commitMove(options[0]);
   }
 
   if (stopCaptureButton) stopCaptureButton.addEventListener("click", () => {
