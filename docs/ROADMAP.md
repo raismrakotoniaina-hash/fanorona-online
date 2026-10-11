@@ -24,11 +24,15 @@ Hanangana sehatra Fanorona malagasy natao ho an'ny finday, misy lalao marina, AI
 **Sata:** vita ny dikan-teny voalohany; mbola mila fitsapana fanampiny sy fanamarinana ny topology amin'ny mpilalao mahay. Ny fitsapana mandeha amin'ny GitHub Actions dia manamarina tranga fototra, fa tsy mbola porofo fa feno avokoa ny fitsipika.
 
 ### Dingana 3 — Vela be
+
+**Sata:** efa misy ny fototra lojika ho an'ny dingana sy ny scoring, miaraka amin'ny fitsapana. Mbola tsy mifandray amin'ny solaitrabe na amin'ny interface izy io; tsy mbola azo lalaovina ny Vela be.
 - [ ] Hamafiso miaraka amin'ny mpilalao mahay ny antsipirian'ny fitsipika sy ny fiafaran'ny dingana tsirairay.
 - [ ] Ampiharo ny dingana voalohany: manolotra vato tsirairay tsy maka, ary tsy maintsy maka ny Vela.
 - [ ] Ampiharo ny dingana faharoa rehefa tonga amin'ny vato dimy ny mpanolotra.
 - [ ] Ampiharo ny famaritana hoe afaka Vela na tsy afaka Vela.
-- [ ] Tehirizo misaraka ny vokatry ny Riatra sy ny Vela.
+- [x] Mamorona fototra mitantana ny dingana Vela sy ny scoring (5–3 na 8–0).
+- [ ] Ampifandraiso amin'ny solaitrabe tena izy ny dingana voalohany sy faharoa.
+- [ ] Tehirizo amin'ny tantaran'ny match ny vokatry ny Riatra sy ny Vela.
 
 ### Dingana 4 — Kaonty sy lalao an-tserasera
 - [ ] Safidio sy amboary ny backend (ohatra Supabase).
