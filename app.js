@@ -71,6 +71,7 @@ import {
       gameOver = true;
       selected = null;
       turnContext = null;
+      hideMoveChoice();
       if (stopCaptureButton) stopCaptureButton.hidden = true;
       setMessage("TAPITRA NY FOTOANA — SAHALA NY RIATRA! Isa 2 avy: Fotsy 2 — Mainty 2. Tsy averina ny lalao ary tsy misy Vela.");
       renderBoard();
@@ -313,6 +314,10 @@ import {
   }
 
   function commitMove(move) {
+    if (gameOver) {
+      hideMoveChoice();
+      return;
+    }
     hideMoveChoice();
     const movingFrom = selected;
     const oldContext = turnContext;
@@ -445,6 +450,7 @@ import {
   });
 
   if (resetButton) resetButton.addEventListener("click", () => {
+    hideMoveChoice();
     board = initialBoard();
     turn = LIGHT;
     selected = null;
