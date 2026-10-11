@@ -60,3 +60,12 @@ h1{font-size:clamp(48px,6vw,78px);line-height:.99;margin:22px 0 22px;font-weight
 /* Aseho foana ny tsipika diagonal, na foana aza ny toerana */
 .board-point.diag-a,.decor-node.diag-a{background-image:linear-gradient(45deg,transparent calc(50% - .5px),rgba(70,52,28,.58) 50%,transparent calc(50% + .5px))}
 .board-point.diag-b,.decor-node.diag-b{background-image:linear-gradient(-45deg,transparent calc(50% - .5px),rgba(70,52,28,.58) 50%,transparent calc(50% + .5px))}
+
+
+/* Vela be: fanaraha-maso ny dingana sy ny kajy, mbola an-tanana */
+.vela-panel{width:100%;margin-top:22px;padding:17px;border:1px solid rgba(237,199,123,.32);border-radius:12px;background:rgba(10,16,27,.62)}
+.vela-panel[hidden]{display:none}
+.vela-panel h3{font-size:18px;line-height:1.3;margin:9px 0}
+.vela-panel p{font-size:10px;color:var(--muted);line-height:1.8;margin:8px 0}
+.vela-panel .full-button{white-space:normal;text-align:left;line-height:1.5;margin-top:10px}
+.vela-panel .vela-score{color:var(--gold);font-weight:700;font-size:12px;margin-top:14px}
