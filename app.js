@@ -2,6 +2,10 @@ import {
   initialBoard, legalMoves, applyMove, countPieces, allLegalMoves,
   opponent, LIGHT, DARK, coordinates
 } from "./game/engine.js";
+import {
+  createVelaSession, recordOfferTaken, completeVela,
+  getVelaResultLabel, VELA_PHASE
+} from "./game/vela.js";
 
 (() => {
   "use strict";
@@ -10,6 +14,13 @@ import {
   const resetButton = document.getElementById("reset-board");
   const message = document.getElementById("board-message");
   const year = document.getElementById("year");
+  const velaPanel = document.getElementById("vela-panel");
+  const velaStatus = document.getElementById("vela-status");
+  const velaAction = document.getElementById("vela-action");
+  const velaScore = document.getElementById("vela-score");
+  const velaOfferButton = document.getElementById("vela-offer-taken");
+  const velaEscapedButton = document.getElementById("vela-escaped");
+  const velaFailedButton = document.getElementById("vela-failed");
   const ROWS = 5;
   const COLS = 9;
   let board = initialBoard();
@@ -17,6 +28,7 @@ import {
   let selected = null;
   let turnContext = null;
   let gameOver = false;
+  let velaSession = null;
 
   if (year) year.textContent = String(new Date().getFullYear());
 
@@ -67,6 +79,59 @@ import {
 
   function setMessage(text) {
     if (message) message.textContent = text;
+  }
+
+  function renderVelaPanel() {
+    if (!velaPanel) return;
+    velaPanel.hidden = !velaSession;
+    if (!velaSession) return;
+
+    if (velaStatus) {
+      const phaseLabel = velaSession.phase === VELA_PHASE.OFFERING
+        ? "Dingana 1 — fanolorana vato"
+        : velaSession.phase === VELA_PHASE.FINAL_GAME
+          ? "Dingana 2 — lalao amin'ny vato dimy"
+          : "Vela be — vita";
+      velaStatus.textContent = phaseLabel;
+    }
+    if (velaAction) {
+      if (velaSession.phase === VELA_PHASE.OFFERING) {
+        velaAction.textContent =
+          "Mbola " + velaSession.winnerPieces + " ny vaton'ny mpandresy Riatra. " +
+          "Fanamarinana an-tanana: isaky ny vita ny fakana vato natolotra dia tsindrio ilay bokotra etsy ambany.";
+      } else if (velaSession.phase === VELA_PHASE.FINAL_GAME) {
+        velaAction.textContent =
+          "Vato dimy sisa no voarakitra ho an'ny mpandresy Riatra. Rehefa vita ny lalao Vela be dia fidio ny vokatra.";
+      } else {
+        velaAction.textContent = getVelaResultLabel(velaSession) + ".";
+      }
+    }
+    if (velaScore) {
+      if (velaSession.score) {
+        velaScore.textContent =
+          "Vokatra: Fotsy " + velaSession.score.light + " — Mainty " + velaSession.score.dark + ".";
+      } else {
+        velaScore.textContent = "Vokatra tournoi: mbola tsy voafaritra.";
+      }
+    }
+    if (velaOfferButton) velaOfferButton.hidden = velaSession.phase !== VELA_PHASE.OFFERING;
+    if (velaEscapedButton) velaEscapedButton.hidden = velaSession.phase !== VELA_PHASE.FINAL_GAME;
+    if (velaFailedButton) velaFailedButton.hidden = velaSession.phase !== VELA_PHASE.FINAL_GAME;
+  }
+
+  function startVelaAfterRiatra(winner) {
+    const counts = countPieces(board);
+    if (counts[winner] < 5) {
+      velaSession = null;
+      renderVelaPanel();
+      setMessage("Tapitra ny Riatra, saingy latsaky ny dimy ny vaton'ny mpandresy. Mila fanamarinana amin'ny mpikarakara ny fanombohana Vela.");
+      return;
+    }
+    velaSession = createVelaSession({
+      riatraWinner: winner,
+      winnerPiecesAfterRiatra: counts[winner]
+    });
+    renderVelaPanel();
   }
 
   function handlePoint(i) {
@@ -138,7 +203,8 @@ import {
     const nextPlayer = opponent(turn);
     if (remaining[nextPlayer] === 0) {
       gameOver = true;
-      setMessage("Tapitra ny lalao! Mandresy ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
+      setMessage("Tapitra ny Riatra! Mandresy ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
+      startVelaAfterRiatra(turn);
       renderBoard();
       return;
     }
@@ -146,12 +212,35 @@ import {
     const nextMoves = allLegalMoves(board, turn);
     if (!nextMoves.length) {
       gameOver = true;
-      setMessage("Tapitra ny lalao: tsy manana vato intsony ny mpilalao manaraka.");
+      setMessage("Tapitra ny Riatra: tsy manana hetsika ara-dalàna ny mpilalao manaraka.");
+      startVelaAfterRiatra(turn);
     } else {
       setMessage("Vita ny hetsika. Anjaran'ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
     }
     renderBoard();
   }
+
+  if (velaOfferButton) velaOfferButton.addEventListener("click", () => {
+    if (!velaSession || velaSession.phase !== VELA_PHASE.OFFERING) return;
+    try {
+      velaSession = recordOfferTaken(velaSession);
+      renderVelaPanel();
+    } catch (error) {
+      setMessage(error.message);
+    }
+  });
+
+  if (velaEscapedButton) velaEscapedButton.addEventListener("click", () => {
+    if (!velaSession || velaSession.phase !== VELA_PHASE.FINAL_GAME) return;
+    velaSession = completeVela(velaSession, true);
+    renderVelaPanel();
+  });
+
+  if (velaFailedButton) velaFailedButton.addEventListener("click", () => {
+    if (!velaSession || velaSession.phase !== VELA_PHASE.FINAL_GAME) return;
+    velaSession = completeVela(velaSession, false);
+    renderVelaPanel();
+  });
 
   if (resetButton) resetButton.addEventListener("click", () => {
     board = initialBoard();
@@ -159,10 +248,13 @@ import {
     selected = null;
     turnContext = null;
     gameOver = false;
+    velaSession = null;
+    renderVelaPanel();
     renderBoard();
     setMessage("Lalao vaovao. Anjaran'ny vato fotsy.");
   });
 
   renderBoard();
+  renderVelaPanel();
   setMessage("Lalao fanazarana. Anjaran'ny vato fotsy. Tsy maintsy maka vato raha misy.");
 })();
