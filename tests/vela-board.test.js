@@ -68,3 +68,17 @@ test("misy fanolorana ara-dalàna amin'ny solaitrabe Vela vaovao ho an'ny mpandr
     assert.ok(legalOfferMoves(board, offerPlayer, offerPlayer === LIGHT ? DARK : LIGHT).length > 0);
   }
 });
+
+test("Vela offer remains legal when the offered stone is first in a multi-stone capture line", () => {
+  const board = Array(45).fill(null);
+  board[indexOf(2, 2)] = LIGHT;
+  board[indexOf(2, 1)] = DARK;
+  board[indexOf(2, 0)] = DARK;
+  const offer = legalOfferMoves(board, LIGHT, DARK)
+    .find(move => move.from === indexOf(2, 2) && move.to === indexOf(2, 3));
+  assert.ok(offer, "the offered stone can be captured even though another stone is behind it");
+  const afterOffer = applyVelaOffer(board, offer, LIGHT, DARK);
+  const captures = legalVelaCaptures(afterOffer, DARK, indexOf(2, 3));
+  assert.ok(captures.some(move => move.mode === "withdrawal"));
+  assert.ok(captures.every(move => move.victims.length === 1 && move.victims[0] === indexOf(2, 3)));
+});
