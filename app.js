@@ -1,5 +1,5 @@
 import {
-  initialBoard, neighbors, legalMoves, applyMove, countPieces,
+  initialBoard, legalMoves, applyMove, countPieces, allLegalMoves,
   opponent, LIGHT, DARK, coordinates
 } from "./game/engine.js";
 
@@ -143,8 +143,8 @@ import {
       return;
     }
     turn = nextPlayer;
-    const nextMoves = legalMoves(board, turn, 0);
-    if (!nextMoves.length && !board.some(p => p === turn)) {
+    const nextMoves = allLegalMoves(board, turn);
+    if (!nextMoves.length) {
       gameOver = true;
       setMessage("Tapitra ny lalao: tsy manana vato intsony ny mpilalao manaraka.");
     } else {
