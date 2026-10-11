@@ -12,6 +12,17 @@ test("position initiale : 45 points et 22 pierres par joueur", () => {
   assert.equal(board[indexOf(2, 4)], null);
 });
 
+
+test("la rangée centrale alterne les couleurs de part et d'autre du centre vide", () => {
+  const board = initialBoard();
+  assert.deepEqual(
+    Array.from({ length: 9 }, (_, col) => board[indexOf(2, col)]),
+    [DARK, LIGHT, DARK, LIGHT, null, DARK, LIGHT, DARK, LIGHT]
+  );
+  assert.equal(countPieces(board).light, 22);
+  assert.equal(countPieces(board).dark, 22);
+});
+
 test("les déplacements orthogonaux restent disponibles sur les bords", () => {
   const n = neighbors(indexOf(0, 0)).map(x => x.index);
   assert.deepEqual(n.sort((a, b) => a - b), [1, 9, 10]);
