@@ -10,7 +10,8 @@ Sehatra Fanorona malagasy an-tserasera — lalao, AI, Vela be ary fifaninanana.
 - Ny `styles.css` no endrika responsive.
 - Ny `app.js` no mitantana ny interface sy ny fifandimbiasan'ny mpilalao.
 - Ny `game/engine.js` no mitahiry ny logic fototry ny lalao.
-- Ny `tests/engine.test.js` no fitsapana mandeha amin'ny `npm test`; GitHub Actions no manandrana azy isaky ny push.
+- Ny `game/vela.js` no fototra lojika amin'ny dingana Vela sy ny scoring manokana 5–3 / 8–0; mbola tsy mifandray amin'ny solaitrabe izy.
+- Ny `tests/engine.test.js` sy `tests/vela.test.js` no fitsapana mandeha amin'ny `npm test`; GitHub Actions no manandrana azy isaky ny push.
 
 ## Antontan-taratasy
 - [Lalana fampandrosoana](docs/ROADMAP.md)
