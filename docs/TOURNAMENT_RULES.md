@@ -19,6 +19,8 @@ Ity no famaritana nifanarahana tamin'ny drafitra ankehitriny, ary tsy lazaina ho
 7. Ho an'ny rafitra tournoi natolotra, Vela iray monja no atao isaky ny Riatra, dia miroso amin'ny match manaraka. Tsy averina tsy misy fetra ny Vela ao anatin'ny match iray.
 
 ## 3. Scoring natolotra ho an'ny tournoi
+
+Efa voasoratra ao amin'ny `game/vela.js` ny kajy isa fototra ary misy fitsapana ho azy. Tsy mbola manamarina ho azy ny lalao Vela na ny vokatra avy amin'ny solaitrabe io module io.
 Ity dia scoring manokana ho an'ity fifaninanana ity:
 - Mpandresy Riatra: 5 isa.
 - Raha afaka Vela ilay resy tamin'ny Riatra: mahazo isa fanampiny 3 izy; mijanona amin'ny 5 ny mpandresy Riatra. Vokatra: **5–3**.
