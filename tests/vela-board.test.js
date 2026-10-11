@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { LIGHT, DARK, indexOf, countPieces } from "../engine.js";
+import { LIGHT, DARK, indexOf, countPieces } from "../game/engine.js";
 import {
   legalOfferMoves, legalVelaCaptures, applyVelaOffer, applyVelaCapture
-} from "../vela-board.js";
+} from "../game/vela-board.js";
 
 function offerPosition() {
   const board = Array(45).fill(null);
