@@ -29,11 +29,11 @@ test("les déplacements orthogonaux restent disponibles sur les bords", () => {
 
 test("les diagonales ne sont légales que depuis les intersections fortes", () => {
   const board = Array(45).fill(null);
-  board[indexOf(1, 1)] = LIGHT; // weak point: diagonals not drawn
-  assert.equal(legalMoves(board, LIGHT, indexOf(1, 1)).some(m => m.to === indexOf(0, 0)), false);
+  board[indexOf(1, 2)] = LIGHT; // weak point: diagonals not drawn
+  assert.equal(legalMoves(board, LIGHT, indexOf(1, 2)).some(m => m.to === indexOf(0, 1)), false);
   board.fill(null);
-  board[indexOf(1, 2)] = LIGHT; // strong point: diagonal is drawn
-  assert.ok(legalMoves(board, LIGHT, indexOf(1, 2)).some(m => m.to === indexOf(0, 1)));
+  board[indexOf(1, 1)] = LIGHT; // strong point: diagonal is drawn
+  assert.ok(legalMoves(board, LIGHT, indexOf(1, 1)).some(m => m.to === indexOf(0, 0)));
 });
 
 test("un déplacement simple déplace la pierre sans en créer", () => {
