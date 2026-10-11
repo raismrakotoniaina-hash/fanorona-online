@@ -72,8 +72,8 @@ test("misy fanolorana ara-dalàna amin'ny solaitrabe Vela vaovao ho an'ny mpandr
 test("Vela offer remains legal when the offered stone is first in a multi-stone capture line", () => {
   const board = Array(45).fill(null);
   board[indexOf(2, 2)] = LIGHT;
+  board[indexOf(2, 4)] = LIGHT;
   board[indexOf(2, 1)] = DARK;
-  board[indexOf(2, 0)] = DARK;
   const offer = legalOfferMoves(board, LIGHT, DARK)
     .find(move => move.from === indexOf(2, 2) && move.to === indexOf(2, 3));
   assert.ok(offer, "the offered stone can be captured even though another stone is behind it");
