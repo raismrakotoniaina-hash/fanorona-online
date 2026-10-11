@@ -28,7 +28,7 @@ export function legalOfferMoves(board, offerPlayer, velaPlayer) {
 /** Legal captures for the Vela player that actually take the offered stone. */
 export function legalVelaCaptures(board, velaPlayer, offeredIndex) {
   return allLegalMoves(board, velaPlayer).filter(move =>
-    move.capture && move.victims.includes(offeredIndex)
+    move.capture && move.victims.length === 1 && move.victims[0] === offeredIndex
   );
 }
 
