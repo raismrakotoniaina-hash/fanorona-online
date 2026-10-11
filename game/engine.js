@@ -14,7 +14,14 @@ export function initialBoard() {
       const i = row * COLS + col;
       if (row < 2) board[i] = LIGHT;
       else if (row > 2) board[i] = DARK;
-      else if (col !== 4) board[i] = col % 2 === 0 ? DARK : LIGHT;
+      else if (col !== 4) {
+        // Ny laharana afovoany dia mifandimby amin'ny lafiny roa amin'ilay toerana foana.
+        // Izany no mahatonga ny vato eo ankavian'ny afovoany tsy hitovy loko
+        // amin'ny vato eo ankavanany.
+        board[i] = col < 4
+          ? (col % 2 === 0 ? DARK : LIGHT)
+          : (col % 2 === 0 ? LIGHT : DARK);
+      }
     }
   }
   return board;
