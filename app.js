@@ -25,6 +25,7 @@
     node.classList.add((row + col) % 2 === 0 ? "diag-a" : "diag-b");
 
     const stoneColor = initialStone(row, col);
+    if (decorative && stoneColor) node.classList.add(stoneColor);
     if (stoneColor) {
       const stone = document.createElement("span");
       if (!decorative) {
