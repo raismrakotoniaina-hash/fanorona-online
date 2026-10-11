@@ -114,10 +114,10 @@ import {
       if (velaSession.phase === VELA_PHASE.OFFERING) {
         velaAction.textContent =
           "Mbola " + velaSession.winnerPieces + " ny vaton'ny mpandresy Riatra. " +
-          "Ny mpandresy no manolotra vato amin’ny solaitrabe vaovao; tsy maintsy maka ilay vato natolotra ny mpilalao Vela."
+          "Ny mpandresy no manolotra vato amin’ny solaitrabe vaovao; tsy maintsy maka ilay vato natolotra ny mpilalao Vela.";
       } else if (velaSession.phase === VELA_PHASE.FINAL_GAME) {
         velaAction.textContent =
-          "Vato dimy sisa. Mitohy eo amin’ity solaitrabe ity ny lalao: ny mpandresy Riatra mitady haka ny vato rehetra an’ny Vela."
+          "Vato dimy sisa. Mitohy eo amin’ity solaitrabe ity ny lalao: ny mpandresy Riatra mitady haka ny vato rehetra an’ny Vela.";
       } else {
         velaAction.textContent = getVelaResultLabel(velaSession) + ".";
       }
@@ -235,11 +235,18 @@ import {
       move.victims.forEach(v => capturedNow.add(v));
       const visited = new Set(oldContext ? oldContext.visited : [movingFrom]);
       visited.add(move.to);
-      const continuation = legalMoves(board, turn, move.to, { captured: capturedNow, visited });
+      const fromCoords = coordinates(move.from);
+      const toCoords = coordinates(move.to);
+      const lastDirection = {
+        dr: toCoords.row - fromCoords.row,
+        dc: toCoords.col - fromCoords.col
+      };
+      const nextContext = { captured: capturedNow, visited, lastDirection };
+      const continuation = legalMoves(board, turn, move.to, nextContext);
       if (continuation.length) {
-        turnContext = { captured: capturedNow, visited };
+        turnContext = nextContext;
         selected = move.to;
-        setMessage("Nahazo vato " + move.victims.length + ". Tsy maintsy manohy maka vato amin'ity lalana ity ianao.");
+        setMessage("Nahazo vato " + move.victims.length + ". Raha manohy ianao dia tsy maintsy miova lalana ary tsy mahazo miverina amin’ny toerana efa nolalovana.");
         renderBoard();
         return;
       }
