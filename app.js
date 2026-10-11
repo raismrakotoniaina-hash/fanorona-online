@@ -15,6 +15,7 @@ import {
   const boardEl = document.getElementById("game-board");
   const decorBoard = document.getElementById("decor-board");
   const resetButton = document.getElementById("reset-board");
+  const stopCaptureButton = document.getElementById("stop-capture");
   const message = document.getElementById("board-message");
   const year = document.getElementById("year");
   const velaPanel = document.getElementById("vela-panel");
@@ -152,6 +153,64 @@ import {
     setMessage("Tapitra ny Riatra. Manomboka Vela be amin’ny solaitrabe vaovao: vato feno ho an’ny mpandresy sy ny mpilalao Vela. Anjaran’ny mpandresy ny manolotra vato.");
   }
 
+  function completeTurn() {
+    selected = null;
+    turnContext = null;
+    if (stopCaptureButton) stopCaptureButton.hidden = true;
+  const remaining = countPieces(board);
+  const nextPlayer = opponent(turn);
+
+  if (velaSession && velaSession.phase === VELA_PHASE.FINAL_GAME) {
+    if (remaining[velaSession.riatraWinner] === 0) {
+      velaSession = completeVela(velaSession, false);
+      gameOver = true;
+      setMessage("Tsy afaka Vela: lany ny vato dimy an’ny mpandresy Riatra.");
+      renderVelaPanel();
+      renderBoard();
+      return;
+    }
+    if (remaining[velaSession.velaPlayer] === 0) {
+      velaSession = completeVela(velaSession, true);
+      gameOver = true;
+      setMessage("Afaka Vela: voafaka ny vato rehetra an’ny mpilalao Vela.");
+      renderVelaPanel();
+      renderBoard();
+      return;
+    }
+    turn = nextPlayer;
+    if (!allLegalMoves(board, turn).length) {
+      const escaped = turn === velaSession.riatraWinner;
+      velaSession = completeVela(velaSession, escaped);
+      gameOver = true;
+      setMessage(escaped ? "Afaka Vela: tsy manana hetsika ara-dalàna ny mpilalao Vela." : "Tsy afaka Vela: tsy afaka mihetsika ny mpandresy Riatra.");
+      renderVelaPanel();
+      renderBoard();
+      return;
+    }
+    setMessage("Dingana faharoa Vela be. Anjaran’ny " + (turn === LIGHT ? "vato fotsy" : "vato mainty") + ".");
+    renderBoard();
+    return;
+  }
+
+  if (remaining[nextPlayer] === 0) {
+    gameOver = true;
+    setMessage("Tapitra ny Riatra! Mandresy ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
+    startVelaAfterRiatra(turn);
+    renderBoard();
+    return;
+  }
+  turn = nextPlayer;
+  const nextMoves = allLegalMoves(board, turn);
+  if (!nextMoves.length) {
+    gameOver = true;
+    setMessage("Tapitra ny Riatra: tsy manana hetsika ara-dalàna ny mpilalao manaraka.");
+    startVelaAfterRiatra(turn);
+  } else {
+    setMessage("Vita ny hetsika. Anjaran'ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
+  }
+  renderBoard();
+  }
+
   function handlePoint(i) {
     if (gameOver) return;
     if (selected === null) {
@@ -171,7 +230,11 @@ import {
     }
 
     if (i === selected) {
-      selected = null;
+      if (turnContext) {
+        setMessage("Mbola misy fakana mitohy. Ampiasao ny bokotra “Atsaharo ny fakana” raha te hamarana ny anjaranao ianao.");
+      } else {
+        selected = null;
+      }
       renderBoard();
       return;
     }
@@ -241,71 +304,26 @@ import {
         dr: toCoords.row - fromCoords.row,
         dc: toCoords.col - fromCoords.col
       };
-      const nextContext = { captured: capturedNow, visited, lastDirection };
+      const nextContext = { captured: capturedNow, visited, lastDirection, piece: move.to };
       const continuation = legalMoves(board, turn, move.to, nextContext);
       if (continuation.length) {
         turnContext = nextContext;
         selected = move.to;
-        setMessage("Nahazo vato " + move.victims.length + ". Raha manohy ianao dia tsy maintsy miova lalana ary tsy mahazo miverina amin’ny toerana efa nolalovana.");
+        if (stopCaptureButton) stopCaptureButton.hidden = false;
+        setMessage("Nahazo vato " + move.victims.length + ". Afaka manohy maka amin’ny lalana hafa ianao, na manindry “Atsaharo ny fakana” hamaranana ny anjaranao.");
         renderBoard();
         return;
       }
     }
 
-    turnContext = null;
-    const remaining = countPieces(board);
-    const nextPlayer = opponent(turn);
-
-    if (velaSession && velaSession.phase === VELA_PHASE.FINAL_GAME) {
-      if (remaining[velaSession.riatraWinner] === 0) {
-        velaSession = completeVela(velaSession, false);
-        gameOver = true;
-        setMessage("Tsy afaka Vela: lany ny vato dimy an’ny mpandresy Riatra.");
-        renderVelaPanel();
-        renderBoard();
-        return;
-      }
-      if (remaining[velaSession.velaPlayer] === 0) {
-        velaSession = completeVela(velaSession, true);
-        gameOver = true;
-        setMessage("Afaka Vela: voafaka ny vato rehetra an’ny mpilalao Vela.");
-        renderVelaPanel();
-        renderBoard();
-        return;
-      }
-      turn = nextPlayer;
-      if (!allLegalMoves(board, turn).length) {
-        const escaped = turn === velaSession.riatraWinner;
-        velaSession = completeVela(velaSession, escaped);
-        gameOver = true;
-        setMessage(escaped ? "Afaka Vela: tsy manana hetsika ara-dalàna ny mpilalao Vela." : "Tsy afaka Vela: tsy afaka mihetsika ny mpandresy Riatra.");
-        renderVelaPanel();
-        renderBoard();
-        return;
-      }
-      setMessage("Dingana faharoa Vela be. Anjaran’ny " + (turn === LIGHT ? "vato fotsy" : "vato mainty") + ".");
-      renderBoard();
-      return;
-    }
-
-    if (remaining[nextPlayer] === 0) {
-      gameOver = true;
-      setMessage("Tapitra ny Riatra! Mandresy ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
-      startVelaAfterRiatra(turn);
-      renderBoard();
-      return;
-    }
-    turn = nextPlayer;
-    const nextMoves = allLegalMoves(board, turn);
-    if (!nextMoves.length) {
-      gameOver = true;
-      setMessage("Tapitra ny Riatra: tsy manana hetsika ara-dalàna ny mpilalao manaraka.");
-      startVelaAfterRiatra(turn);
-    } else {
-      setMessage("Vita ny hetsika. Anjaran'ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
-    }
-    renderBoard();
+    completeTurn();
   }
+
+  if (stopCaptureButton) stopCaptureButton.addEventListener("click", () => {
+    if (!turnContext || gameOver) return;
+    completeTurn();
+    renderBoard();
+  });
 
   if (velaOfferButton) velaOfferButton.addEventListener("click", () => {
     return; // Ny dingana Vela dia mandroso amin’ny hetsika tena izy eo amin’ny solaitrabe.
@@ -326,6 +344,7 @@ import {
     turn = LIGHT;
     selected = null;
     turnContext = null;
+    if (stopCaptureButton) stopCaptureButton.hidden = true;
     gameOver = false;
     velaSession = null;
     velaOfferedIndex = null;
