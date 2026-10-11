@@ -25,13 +25,16 @@ Hanangana sehatra Fanorona malagasy natao ho an'ny finday, misy lalao marina, AI
 
 ### Dingana 3 — Vela be
 
-**Sata:** efa misy ny fototra lojika ho an'ny dingana sy ny scoring, miaraka amin'ny fitsapana. Mbola tsy mifandray amin'ny solaitrabe na amin'ny interface izy io; tsy mbola azo lalaovina ny Vela be.
+**Sata:** misy ny fitantanana dingana sy scoring, ary nampiana logic manamarina ny fanolorana vato sy ny fakana ilay vato natolotra eo amin'ny solaitrabe nomena. Mbola tsy tafiditra amin'ny UI ny logic vaovao, ary tsy mbola voafaritra ao anaty code ny fametrahana vato fanombohana amin'ny Vela be.
 - [ ] Hamafiso miaraka amin'ny mpilalao mahay ny antsipirian'ny fitsipika sy ny fiafaran'ny dingana tsirairay.
 - [ ] Ampiharo ny dingana voalohany: manolotra vato tsirairay tsy maka, ary tsy maintsy maka ny Vela.
 - [ ] Ampiharo ny dingana faharoa rehefa tonga amin'ny vato dimy ny mpanolotra.
 - [ ] Ampiharo ny famaritana hoe afaka Vela na tsy afaka Vela.
 - [x] Mamorona fototra mitantana ny dingana Vela sy ny scoring (5–3 na 8–0).
-- [ ] Ampifandraiso amin'ny solaitrabe tena izy ny dingana voalohany sy faharoa.
+- [x] Manorata logic manamarina ny fanolorana vato sy ny fakana ilay vato natolotra amin'ny solaitrabe.
+- [ ] Ampifandraiso amin'ny UI ny dingana voalohany, ka ny hetsika tena izy no mampandroso ny session fa tsy bokotra fanisana.
+- [ ] Farito sy ampiharo ny fametrahana vato fanombohana amin'ny Vela be, miaraka amin'ny fanamarinana avy amin'ny mpilalao mahay.
+- [ ] Ampifandraiso amin'ny solaitrabe ny dingana faharoa sy ny famaritana hoe afaka Vela na tsy afaka Vela.
 - [ ] Tehirizo amin'ny tantaran'ny match ny vokatry ny Riatra sy ny Vela.
 
 ### Dingana 4 — Kaonty sy lalao an-tserasera
