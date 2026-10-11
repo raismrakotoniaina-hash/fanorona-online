@@ -12,7 +12,7 @@ export function createVelaBoard(offerPlayer) {
   }
   const board = initialBoard();
   if (offerPlayer === DARK) {
-    return board.map(piece => piece === LIGHT ? DARK : piece === DARK ? LIGHT : null);
+    return board.reverse().map(piece => piece === LIGHT ? DARK : piece === DARK ? LIGHT : null);
   }
   return board;
 }
