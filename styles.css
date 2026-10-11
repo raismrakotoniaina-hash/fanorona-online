@@ -79,3 +79,10 @@ h1{font-size:clamp(48px,6vw,78px);line-height:.99;margin:22px 0 22px;font-weight
 /* Compte à rebours amin'ny faran'ny Riatra */
 .riatra-timer{margin:14px 0 0;padding:10px 13px;border:1px solid rgba(237,199,123,.42);border-radius:9px;background:rgba(237,199,123,.08);color:var(--gold);font-size:13px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
 .riatra-timer[hidden]{display:none}
+
+
+/* Safidy mazava amin'ny fakana vato, indrindra amin'ny Vela be */
+.move-choice{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;padding:12px;border:1px solid rgba(237,199,123,.35);border-radius:10px;background:rgba(10,16,27,.72)}
+.move-choice[hidden]{display:none}
+.move-choice p{width:100%;margin:0 0 4px;color:var(--gold);font-size:11px;font-weight:700}
+.move-choice .button{width:auto;flex:1 1 180px;white-space:normal;text-align:left;line-height:1.45}
