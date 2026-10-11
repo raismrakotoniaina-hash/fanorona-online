@@ -3,20 +3,22 @@
 Sehatra Fanorona malagasy an-tserasera — lalao, AI, Vela be ary fifaninanana.
 
 ## Toetry ny tetikasa
-**Dingana voalohany: interface santatra.** Efa misy pejy fandraisana responsive sy solaitrabe aseho amin'ny navigateur. Tsy mbola azo lalaovina ny solaitrabe, ary tsy mbola misy multiplayer, kaonty na fandoavam-bola.
+**Dingana ankehitriny: prototype azo lalaovina amin'ny fitaovana iray.** Afaka mifandimby milalao eo amin'ny navigateur ny olona roa; misy hetsika fototra, fakana amin'ny approach/withdrawal, fakana an-tery ary fakana maromaro. Mbola tsy misy multiplayer, kaonty na fandoavam-bola. Mila hamarinina amin'ny mpilalao mahay ny topology sy ny antsipirian'ny fitsipika alohan'ny hampiasana azy amin'ny tournoi.
 
 ## Hijery sy hanandrana
 - Sokafy ny `index.html` amin'ny navigateur, na alefaso amin'ny static hosting toy ny GitHub Pages/Vercel.
 - Ny `styles.css` no endrika responsive.
-- Ny `app.js` no mamorona ny solaitrabe santatra.
+- Ny `app.js` no mitantana ny interface sy ny fifandimbiasan'ny mpilalao.
+- Ny `game/engine.js` no mitahiry ny logic fototry ny lalao.
+- Ny `tests/engine.test.js` no fitsapana mandeha amin'ny `npm test`; GitHub Actions no manandrana azy isaky ny push.
 
 ## Antontan-taratasy
 - [Lalana fampandrosoana](docs/ROADMAP.md)
 - [Fitsipika sy fitantanana fifaninanana](docs/TOURNAMENT_RULES.md)
 
 ## Filaharan'ny asa
-1. Hamarino ny fitsipika sy ny topology an'ny solaitrabe.
-2. Manorata Fanorona game engine misy validation sy fitsapana.
+1. Hamarino amin'ny fitsapana sy mpilalao mahay ny topology sy ny fitsipiky ny game engine.
+2. Fenoy ny fitsapana amin'ny toe-javatra sarotra sy ny fiafaran'ny lalao.
 3. Ampiharo ny Vela be sy ny scoring manokana amin'ny tournoi.
 4. Ampidiro backend, kaonty, multiplayer ary tantaran'ny lalao.
 5. Amboary ny fitantanana fifaninanana sy audit log.
