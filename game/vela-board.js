@@ -1,6 +1,21 @@
 import {
-  neighbors, legalMoves, allLegalMoves, applyMove, opponent
+  neighbors, allLegalMoves, applyMove, opponent, initialBoard, LIGHT, DARK
 } from "./engine.js";
+
+/**
+ * Creates a fresh full-set Vela board. The colors are swapped when DARK is
+ * the offer player so the initial offer opportunities are equivalent.
+ */
+export function createVelaBoard(offerPlayer) {
+  if (offerPlayer !== LIGHT && offerPlayer !== DARK) {
+    throw new TypeError("offerPlayer must be 'light' or 'dark'");
+  }
+  const board = initialBoard();
+  if (offerPlayer === DARK) {
+    return board.map(piece => piece === LIGHT ? DARK : piece === DARK ? LIGHT : null);
+  }
+  return board;
+}
 
 /**
  * Legal offers for Vela phase 1.
