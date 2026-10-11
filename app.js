@@ -46,7 +46,7 @@ import {
     const node = document.createElement(decorative ? "div" : "button");
     const { row, col } = coordinates(i);
     node.className = decorative ? "decor-node" : "board-point";
-    node.classList.add((row + col) % 2 === 0 ? "diag-a" : "diag-b");
+    if ((row + col) % 2 === 0) node.classList.add("diag-strong");
     if (!decorative) {
       node.type = "button";
       node.setAttribute("aria-label", pointLabel(i) + (board[i] ? ", vato " + (board[i] === LIGHT ? "fotsy" : "mainty") : ", foana"));
