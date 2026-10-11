@@ -79,6 +79,6 @@ test("Vela offer remains legal when the offered stone is first in a multi-stone 
   assert.ok(offer, "the offered stone can be captured even though another stone is behind it");
   const afterOffer = applyVelaOffer(board, offer, LIGHT, DARK);
   const captures = legalVelaCaptures(afterOffer, DARK, indexOf(2, 3));
-  assert.ok(captures.some(move => move.mode === "withdrawal"));
+  assert.ok(captures.some(move => move.mode === "approach"));
   assert.ok(captures.every(move => move.victims.length === 1 && move.victims[0] === indexOf(2, 3)));
 });
