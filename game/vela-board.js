@@ -18,7 +18,7 @@ export function legalOfferMoves(board, offerPlayer, velaPlayer) {
       const move = { from, to, capture: false, mode: null, victims: [] };
       const nextBoard = applyMove(board, move, offerPlayer);
       const canTakeOfferedStone = allLegalMoves(nextBoard, velaPlayer)
-        .some(candidate => candidate.capture && candidate.victims.includes(to));
+        .some(candidate => candidate.capture && candidate.victims.length === 1 && candidate.victims[0] === to);
       if (canTakeOfferedStone) offers.push(move);
     }
   }
