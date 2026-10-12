@@ -18,6 +18,15 @@ test("tsy manambara sahala amin'ny isan'ny vato fotsiny", () => {
   assert.equal(recordEndgamePosition(tracker, board, LIGHT, false), null);
 });
 
+test("sahala ny Riatra rehefa 1 manoloana 5 ary tsy misy fakana ara-dalàna", () => {
+  const board = Array(45).fill(null);
+  board[0] = LIGHT;
+  for (let i = 36; i <= 40; i += 1) board[i] = DARK;
+  const tracker = createEndgameTracker();
+  resetEndgameTracker(tracker, board, LIGHT);
+  assert.equal(recordEndgamePosition(tracker, board, LIGHT, false).reason, "low-material-no-capture");
+});
+
 test("draw automatique rehefa miverina in-telo ny position miaraka amin'ny anjaran'ny mpilalao", () => {
   const board = Array(45).fill(null);
   board[0] = LIGHT;
