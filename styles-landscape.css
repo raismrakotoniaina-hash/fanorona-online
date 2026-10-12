@@ -45,7 +45,8 @@
   .board-point { min-width: 20px; min-height: 20px; }
   .board-legend { gap: 8px; font-size: 8px; }
   .board-legend .stone { width: 10px; height: 10px; }
-  .game-aside { min-width: 0; padding: 12px; border-radius: 10px; }
+  .game-aside { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; padding: 12px; border-radius: 10px; }
+  .game-aside .aside-icon, .game-aside .eyebrow, .game-aside h3, .game-aside > p, .game-aside .feature-line, .game-aside .full-button, .game-aside .small-note { grid-column: auto; }
   .game-aside .aside-icon { width: 30px; height: 30px; margin-bottom: 9px; font-size: 16px; }
   .game-aside .eyebrow { font-size: 8px; }
   .game-aside h3 { font-size: 17px; margin: 5px 0 7px; }
