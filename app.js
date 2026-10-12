@@ -9,7 +9,7 @@ import {
 import {
   createVelaBoard, legalOfferMoves, legalVelaCaptures, applyVelaOffer, applyVelaCapture
 } from "./game/vela-board.js";
-import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from "./game/endgame.js";
+import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, createMatchClock, startClockTurn, getClockRemaining, stopClockTurn, formatClock } from "./game/endgame.js";
 
 (() => {
   "use strict";
@@ -57,10 +57,14 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from
   let riatraDeadline = null;
   let riatraTimerInterval = null;
   const endgameTracker = createEndgameTracker();
+  const matchClock = createMatchClock();
+  let clockInterval = null;
   let turnHadCapture = false;
 
   if (year) year.textContent = String(new Date().getFullYear());
   resetEndgameTracker(endgameTracker, board, turn);
+  startClockTurn(matchClock, turn);
+  clockInterval = setInterval(updateRiatraTimer, 250);
 
   function checkEndgameDraw(nextPlayer) {
     const result = recordEndgamePosition(endgameTracker, board, nextPlayer, turnHadCapture);
@@ -85,44 +89,81 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from
   }
 
   function stopRiatraTimer() {
-    if (riatraTimerInterval !== null) {
-      clearInterval(riatraTimerInterval);
-      riatraTimerInterval = null;
+    if (clockInterval !== null) {
+      clearInterval(clockInterval);
+      clockInterval = null;
     }
-    riatraDeadline = null;
+    matchClock.running = false;
+    matchClock.startedAt = null;
     if (riatraTimer) riatraTimer.hidden = true;
   }
 
-  function updateRiatraTimer() {
-    if (riatraDeadline === null || gameOver || velaSession) return;
-    const secondsLeft = Math.max(0, Math.ceil((riatraDeadline - Date.now()) / 1000));
-    if (riatraTimer) {
-      const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
-      const seconds = String(secondsLeft % 60).padStart(2, "0");
-      riatraTimer.textContent = "Fotoana sisa amin’ny Riatra: " + minutes + ":" + seconds;
-      riatraTimer.hidden = false;
-    }
-    if (secondsLeft === 0) {
-      stopRiatraTimer();
-      gameOver = true;
-      selected = null;
-      turnContext = null;
-      hideMoveChoice();
-      if (stopCaptureButton) stopCaptureButton.hidden = true;
-      setMessage("TAPITRA NY FOTOANA — SAHALA NY RIATRA! Isa 2 avy: Fotsy 2 — Mainty 2. Tsy averina ny lalao ary tsy misy Vela.");
+  function handleClockTimeout(loser) {
+    stopRiatraTimer();
+    gameOver = true;
+    selected = null;
+    turnContext = null;
+    hideMoveChoice();
+    if (stopCaptureButton) stopCaptureButton.hidden = true;
+    if (velaSession && velaSession.phase === VELA_PHASE.OFFERING) {
+      const escaped = loser === velaSession.riatraWinner;
+      velaSession = completeVelaOffering(velaSession, escaped);
+      setMessage("LANY FOTOANA: " + (loser === LIGHT ? "Fotsy" : "Mainty") +
+        ". Tapitra avy hatrany ny Vela be. " +
+        (escaped ? "Afaka Vela ny mpilalao Vela: isa 5–3." : "Tsy afaka Vela ny mpilalao Vela: isa 8–0."));
+      renderVelaPanel();
       renderBoard();
+      return;
+    }
+    if (velaSession && velaSession.phase === VELA_PHASE.FINAL_GAME) {
+      const escaped = loser === velaSession.riatraWinner;
+      velaSession = completeVela(velaSession, escaped);
+      setMessage("LANY FOTOANA: " + (loser === LIGHT ? "Fotsy" : "Mainty") +
+        ". Tapitra avy hatrany ny Vela be. " +
+        (escaped ? "Afaka Vela ny mpilalao Vela: isa 5–3." : "Tsy afaka Vela ny mpilalao Vela: isa 8–0."));
+      renderVelaPanel();
+      renderBoard();
+      return;
+    }
+    const winner = opponent(loser);
+    velaSession = completeVelaOffering(createVelaSession({
+      riatraWinner: winner,
+      winnerPiecesAfterRiatra: Math.max(5, countPieces(board)[winner])
+    }), false);
+    setMessage("LANY FOTOANA: " + (loser === LIGHT ? "Fotsy" : "Mainty") +
+      ". Mandresy avy hatrany ny " + (winner === LIGHT ? "vato fotsy" : "vato mainty") +
+      ". Tapitra ny lalao amin'ny fifaninanana; vokatra 8–0.");
+    renderVelaPanel();
+    renderBoard();
+  }
+
+  function updateRiatraTimer() {
+    if (!riatraTimer) return;
+    const now = Date.now();
+    const lightMs = getClockRemaining(matchClock, LIGHT, now);
+    const darkMs = getClockRemaining(matchClock, DARK, now);
+    riatraTimer.textContent = "CHRONO 2 MIN / MPILALAO — Fotsy " + formatClock(lightMs) +
+      " | Mainty " + formatClock(darkMs) + " | Anjaran’ny " +
+      (turn === LIGHT ? "Fotsy" : "Mainty");
+    riatraTimer.hidden = false;
+    if (!gameOver && matchClock.running && getClockRemaining(matchClock, matchClock.activePlayer, now) <= 0) {
+      const stopped = stopClockTurn(matchClock, now);
+      if (stopped.expired) handleClockTimeout(stopped.player);
     }
   }
 
   function startRiatraTimerIfNeeded() {
-    if (velaSession || gameOver || riatraDeadline !== null) return;
-    const pieces = countPieces(board);
-    if (pieces.light > 5 || pieces.dark > 5) return;
-    riatraDeadline = Date.now() + 5 * 60 * 1000;
-    if (riatraTimer) riatraTimer.hidden = false;
+    if (gameOver || matchClock.running) return;
+    startClockTurn(matchClock, turn);
+    if (clockInterval === null) clockInterval = setInterval(updateRiatraTimer, 250);
     updateRiatraTimer();
-    riatraTimerInterval = setInterval(updateRiatraTimer, 250);
-    setMessage("Vitsy vato sisa amin’ny Riatra. Nanomboka ny compte à rebours 5 minitra; raha tapitra dia sahala ary isa 2 avy.");
+  }
+
+  function stopClockForMove() {
+    if (!matchClock.running) return { player: turn, expired: false };
+    const stopped = stopClockTurn(matchClock);
+    if (stopped.expired) handleClockTimeout(stopped.player);
+    return stopped;
   }
 
   function pointLabel(i) {
@@ -239,6 +280,7 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from
       riatraWinner: winner,
       winnerPiecesAfterRiatra: countPieces(board)[winner]
     });
+    startRiatraTimerIfNeeded();
     renderVelaPanel();
     renderBoard();
     setMessage("Tapitra ny Riatra. Manomboka Vela be amin’ny solaitrabe vaovao: vato feno ho an’ny mpandresy sy ny mpilalao Vela. Anjaran’ny mpandresy ny manolotra vato.");
@@ -388,6 +430,8 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from
       return;
     }
     hideMoveChoice();
+    const clockResult = stopClockForMove();
+    if (clockResult.expired || gameOver) return;
     const movingFrom = move.from;
     const oldContext = turnContext;
     selected = null;
@@ -438,6 +482,7 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from
           setMessage("TAPITRA NY VELA BE: tsy misy fanolorana ara-dalàna intsony. Afaka Vela ny mpilalao. Vokatra 5–3.");
         }
 
+        if (!gameOver) startRiatraTimerIfNeeded();
         renderVelaPanel();
         renderBoard();
       } catch (error) {
@@ -467,6 +512,7 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from
         selected = move.to;
         if (stopCaptureButton) stopCaptureButton.hidden = false;
         setMessage("Nahazo vato " + move.victims.length + ". Afaka manohy maka amin’ny lalana hafa ianao, na manindry “Atsaharo ny fakana” hamaranana ny anjaranao.");
+        startRiatraTimerIfNeeded();
         renderBoard();
         return;
       }
@@ -561,6 +607,10 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from
     if (stopCaptureButton) stopCaptureButton.hidden = true;
     gameOver = false;
     stopRiatraTimer();
+    matchClock.remaining = { light: 120000, dark: 120000 };
+    matchClock.activePlayer = null;
+    startClockTurn(matchClock, LIGHT);
+    clockInterval = setInterval(updateRiatraTimer, 250);
     velaSession = null;
     velaOfferedIndex = null;
     turnHadCapture = false;
