@@ -366,6 +366,30 @@ import {
           }
         }
         turnContext = null;
+
+        // Vela be dingana voalohany: tsy avela hijanona tsy misy valiny ny solaitrabe.
+        // Raha tsy afaka maka ilay vato natolotra ny mpilalao Vela, tsy afaka izy.
+        if (velaSession.phase === VELA_PHASE.OFFERING &&
+            turn === velaSession.velaPlayer &&
+            velaOfferedIndex !== null &&
+            legalVelaCaptures(board, velaSession.velaPlayer, velaOfferedIndex).length === 0) {
+          velaSession = completeVela(velaSession, false);
+          gameOver = true;
+          velaOfferedIndex = null;
+          setMessage("TAPITRA NY VELA BE: tsy afaka naka ilay vato natolotra ny mpilalao Vela. Vokatra 8–0.");
+        }
+
+        // Rehefa avy naka ny vato natolotra ny mpilalao Vela, raha tsy misy
+        // fanolorana ara-dalàna intsony, dia tapitra ho azy ny dingana voalohany.
+        if (velaSession.phase === VELA_PHASE.OFFERING &&
+            turn === velaSession.riatraWinner &&
+            legalOfferMoves(board, velaSession.riatraWinner, velaSession.velaPlayer).length === 0) {
+          velaSession = completeVela(velaSession, true);
+          gameOver = true;
+          velaOfferedIndex = null;
+          setMessage("TAPITRA NY VELA BE: tsy misy fanolorana ara-dalàna intsony. Afaka Vela ny mpilalao. Vokatra 5–3.");
+        }
+
         renderVelaPanel();
         renderBoard();
       } catch (error) {
