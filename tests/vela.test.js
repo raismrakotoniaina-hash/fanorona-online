@@ -89,7 +89,7 @@ test("Vela phase one removes exactly one offered stone even when a line contains
   const afterOffer = board.slice();
   afterOffer[offer.to] = LIGHT;
   afterOffer[offer.from] = null;
-  const captures = legalVelaCaptures(afterOffer, DARK, offer.to);
+  const captures = legalVelaCaptures(afterOffer, DARK);
   assert.ok(captures.length > 0);
   assert.ok(captures.every(move => move.victims.length === 1 && move.victims[0] === offer.to));
 });
