@@ -362,6 +362,17 @@ import { chooseAiMove } from "./game/ai.js";
       return;
     }
     turn = nextPlayer;
+    // Hamarino aloha raha mbola afaka mihetsika ny mpilalao; tsy tokony
+    // hanarona fandresena/fitsoahana ara-dalàna ny fepetra sahala.
+    if (!allLegalMoves(board, turn).length) {
+      const escaped = turn === velaSession.riatraWinner;
+      velaSession = completeVela(velaSession, escaped);
+      gameOver = true;
+      setMessage(escaped ? "Afaka Vela: tsy manana hetsika ara-dalàna ny mpilalao Vela." : "Tsy afaka Vela: tsy afaka mihetsika ny mpandresy Riatra.");
+      renderVelaPanel();
+      renderBoard();
+      return;
+    }
     const velaDraw = checkEndgameDraw(turn);
     if (velaDraw) {
       // Ny sahala amin'ny Vela dia midika fa tsy afa-bela ilay resy tamin'ny Riatra:
@@ -373,15 +384,6 @@ import { chooseAiMove } from "./game/ai.js";
           velaDraw.reason === "repetition" ? "miverimberina ny toerana ka tsy misy fandrosoana." :
             "tsy nisy fakana vato nandritra ny hetsika 60.") +
         " Tsy afa-bela ilay mpilalao Vela. Mahazo isa 3 fanampiny ny mpandresy Riatra. Vokatra 8–0.");
-      renderVelaPanel();
-      renderBoard();
-      return;
-    }
-    if (!allLegalMoves(board, turn).length) {
-      const escaped = turn === velaSession.riatraWinner;
-      velaSession = completeVela(velaSession, escaped);
-      gameOver = true;
-      setMessage(escaped ? "Afaka Vela: tsy manana hetsika ara-dalàna ny mpilalao Vela." : "Tsy afaka Vela: tsy afaka mihetsika ny mpandresy Riatra.");
       renderVelaPanel();
       renderBoard();
       return;
@@ -401,11 +403,6 @@ import { chooseAiMove } from "./game/ai.js";
     return;
   }
   turn = nextPlayer;
-  const riatraDraw = checkEndgameDraw(turn);
-  if (riatraDraw) {
-    endRiatraAsDraw(riatraDraw);
-    return;
-  }
   const nextMoves = allLegalMoves(board, turn);
   if (!nextMoves.length) {
     const otherPlayer = opponent(turn);
@@ -424,6 +421,11 @@ import { chooseAiMove } from "./game/ai.js";
       startVelaAfterRiatra(otherPlayer);
     }
   } else {
+    const riatraDraw = checkEndgameDraw(turn);
+    if (riatraDraw) {
+      endRiatraAsDraw(riatraDraw);
+      return;
+    }
     startRiatraTimerIfNeeded();
     if (riatraDeadline === null) {
       setMessage("Vita ny hetsika. Anjaran'ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ".");
