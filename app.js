@@ -128,7 +128,7 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
     const winner = opponent(loser);
     velaSession = completeVelaOffering(createVelaSession({
       riatraWinner: winner,
-      winnerPiecesAfterRiatra: Math.max(5, countPieces(board)[winner])
+      winnerPiecesAfterRiatra: 22
     }), false);
     setMessage("LANY FOTOANA: " + (loser === LIGHT ? "Fotsy" : "Mainty") +
       ". Mandresy avy hatrany ny " + (winner === LIGHT ? "vato fotsy" : "vato mainty") +
@@ -335,6 +335,7 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
       renderBoard();
       return;
     }
+    startRiatraTimerIfNeeded();
     setMessage("Dingana faharoa Vela be. Anjaran’ny " + (turn === LIGHT ? "vato fotsy" : "vato mainty") + ".");
     renderBoard();
     return;
