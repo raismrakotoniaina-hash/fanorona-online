@@ -58,6 +58,38 @@
       <div><strong>∞</strong><span>Paikady tsy manam-petra</span></div>
     </section>
 
+
+    <section class="online-section section" id="online">
+      <div class="section-heading">
+        <div><div class="eyebrow">FIFANDRAISANA AN-TSERASERA</div><h2>Milalaova miaraka amin’ny <span>namana.</span></h2></div>
+        <p>Mamoròna kaonty, mamoròna efitra, ary zarao amin’ny namanao ny kaody. Ity no dingana voalohany amin’ny multiplayer; mbola tsy ekena ho fifaninanana ofisialy ny lalao.</p>
+      </div>
+      <div class="online-card">
+        <div class="online-account-head"><div><div class="eyebrow">KAONTY MPIALAO</div><strong id="online-account-label">Tsy mbola tafiditra</strong></div><button class="button button-quiet" id="online-signout" type="button" hidden>Hivoaka</button></div>
+        <form id="online-auth-form" class="online-auth-form">
+          <div id="online-auth-fields">
+            <label>Anarana aseho (tsy voatery)<input id="online-display-name" maxlength="60" autocomplete="nickname" placeholder="Solon’anarana"></label>
+            <label>Email<input id="online-email" type="email" autocomplete="email" required placeholder="anarana@example.com"></label>
+            <label>Tenimiafina<input id="online-password" type="password" minlength="8" autocomplete="current-password" required placeholder="8 tarehintsoratra farafahakeliny"></label>
+            <div class="online-actions"><button class="button button-primary" id="online-signup" type="button">Hamorona kaonty</button><button class="button button-outline" id="online-signin" type="button">Hiditra</button></div>
+          </div>
+        </form>
+        <p class="online-status" id="online-status" role="status" aria-live="polite">Mifandray amin’ny Supabase…</p>
+        <div id="online-room-controls" hidden>
+          <div class="online-actions"><button class="button button-primary" id="online-create-room" type="button">Mamorona efitra</button></div>
+          <div class="online-join-row"><label>Kaodin’ny efitra<input id="online-room-code-input" maxlength="6" autocapitalize="characters" placeholder="ABC234"></label><button class="button button-outline" id="online-join-room" type="button">Hiditra amin’ny kaody</button></div>
+        </div>
+        <div id="online-room-panel" class="online-room-panel" hidden>
+          <div class="online-room-head"><div><div class="eyebrow">Efitra filalaovana</div><strong id="online-room-code">------</strong><p id="online-room-status">Miandry mpilalao faharoa…</p></div><button class="button button-outline" id="online-copy-code" type="button">Adika ny kaody</button></div>
+          <p class="small-note">Mbola eo am-pananganana ny fandefasana sy fanamarinana ny hetsika amin’ny solaitrabe. Aza ampiasaina amin’ny fifaninanana misy loka na saram-pidirana aloha.</p>
+          <div class="online-chat">
+            <div><div class="eyebrow">RESAKA AO ANATIN’NY EFITRA</div><div class="online-chat-list" id="online-chat-list" aria-live="polite"></div></div>
+            <form id="online-chat-form"><label>Hafatra<input id="online-chat-input" maxlength="1000" placeholder="Soraty ny hafatrao…" required></label><button class="button button-primary" type="submit">Alefa</button></form>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="play-section section" id="lalao">
       <div class="section-heading">
         <div><div class="eyebrow">NY DINGANA VOALOHANY</div><h2>Midira amin'ny <span>lalao.</span></h2></div>
@@ -149,6 +181,7 @@
     <p>Mitahiry ny lova. Manangana ny ho avy.</p>
     <span class="footer-copy">© <span id="year"></span> Fanorona Online</span>
   </footer>
+  <script type="module" src="online.js"></script>
   <script type="module" src="app.js"></script>
 </body>
 </html>
