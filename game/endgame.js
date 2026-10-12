@@ -1,3 +1,5 @@
+import { allLegalMoves } from "./engine.js";
+
 export const MAX_QUIET_TURNS = 60;
 export const REPETITION_LIMIT = 3;
 
@@ -26,6 +28,16 @@ export function recordEndgamePosition(tracker, board, nextPlayer, capturedThisTu
     if (piece) result[piece] += 1;
     return result;
   }, { light: 0, dark: 0 });
+
+  // Amin'ny Riatra, 1 manoloana 5 dia raisina ho sahala avy hatrany
+  // raha tsy misy fakana ara-dalàna azon'ny andaniny roa atao amin'io toerana io.
+  const low = Math.min(counts.light, counts.dark);
+  const high = Math.max(counts.light, counts.dark);
+  if (low === 1 && high === 5) {
+    const lightCanCapture = allLegalMoves(board, "light").some(move => move.capture);
+    const darkCanCapture = allLegalMoves(board, "dark").some(move => move.capture);
+    if (!lightCanCapture && !darkCanCapture) return { reason: "low-material-no-capture", counts };
+  }
 
   // Tsy mamarana lalao amin'ny isan'ny vato fotsiny: ny toerana sy ny
   // fiverimberenan'ny lalao no jerena, mba tsy hampitsahatra 3-4 na 5-3 an-jambany.
