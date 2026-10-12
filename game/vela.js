@@ -39,11 +39,7 @@ export function recordOfferTaken(session) {
   return next;
 }
 
-export function completeVela(session, escaped) {
-  if (!session ||
-      (session.phase !== VELA_PHASE.FINAL_GAME && session.phase !== VELA_PHASE.OFFERING)) {
-    throw new Error("Tsy ao amin'ny dingana Vela azo faranana ny lalao.");
-  }
+function completedSession(session, escaped) {
   if (typeof escaped !== "boolean") {
     throw new TypeError("escaped must be true or false");
   }
@@ -57,6 +53,20 @@ export function completeVela(session, escaped) {
       ? { [winner]: 5, [loser]: 3 }
       : { [winner]: 8, [loser]: 0 }
   };
+}
+
+export function completeVela(session, escaped) {
+  if (!session || session.phase !== VELA_PHASE.FINAL_GAME) {
+    throw new Error("Tsy ao amin'ny dingana faharoa Vela azo faranana ny lalao.");
+  }
+  return completedSession(session, escaped);
+}
+
+export function completeVelaOffering(session, escaped) {
+  if (!session || session.phase !== VELA_PHASE.OFFERING) {
+    throw new Error("Tsy ao amin'ny dingana fanolorana Vela azo faranana ny lalao.");
+  }
+  return completedSession(session, escaped);
 }
 
 export function getVelaResultLabel(session) {
