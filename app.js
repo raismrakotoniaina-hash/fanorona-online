@@ -9,7 +9,7 @@ import {
 import {
   createVelaBoard, legalOfferMoves, legalVelaCaptures, applyVelaOffer, applyVelaCapture
 } from "./game/vela-board.js";
-import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, createMatchClock, startClockTurn, getClockRemaining, stopClockTurn, formatClock } from "./game/endgame.js";
+import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, createMatchClock, DEFAULT_PLAYER_TIME_MS, startClockTurn, getClockRemaining, stopClockTurn, formatClock } from "./game/endgame.js";
 
 (() => {
   "use strict";
@@ -155,6 +155,11 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
 
   function startRiatraTimerIfNeeded() {
     if (gameOver || matchClock.running) return;
+    // Ny mpilalao vao mandray anjara dia mahazo 2 minitra vaovao.
+    // Raha manohy maka amin'ny anjarany ihany izy, dia tazonina ny fotoana sisa.
+    if (matchClock.activePlayer !== turn) {
+      matchClock.remaining[turn] = DEFAULT_PLAYER_TIME_MS;
+    }
     startClockTurn(matchClock, turn);
     if (clockInterval === null) clockInterval = setInterval(updateRiatraTimer, 250);
     updateRiatraTimer();
