@@ -80,7 +80,7 @@ test("afaka misafidy vato hafa hohanina ny mpanala Vela fa tsy voatery ilay nafi
   const afterCapture = applyVelaCapture(afterOffer, otherStoneCapture, DARK);
   assert.equal(afterCapture[indexOf(0, 0)], null);
   assert.equal(afterCapture[indexOf(2, 3)], LIGHT, "the offered stone remains on the board");
-  assert.equal(countPieces(afterCapture).light, 2);
+  assert.equal(countPieces(afterCapture).light, 1);
 });
 
 
