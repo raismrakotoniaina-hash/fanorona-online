@@ -1,30 +1,35 @@
 # Fanorona Online 🇲🇬
 
-Sehatra Fanorona malagasy an-tserasera — lalao, AI, Vela be ary fifaninanana.
+Sehatra Fanorona malagasy natao ho an'ny finday sy navigateur, miaraka amin'ny AI, lalao olona roa amin'ny fitaovana iray, ary fanomanana fifaninanana.
 
-## Toetry ny tetikasa
-**Dingana ankehitriny: prototype azo lalaovina amin'ny fitaovana iray.** Afaka mifandimby milalao eo amin'ny navigateur ny olona roa; misy hetsika fototra, fakana amin'ny approach/withdrawal, fakana an-tery ary fakana maromaro. Mbola tsy misy multiplayer, kaonty na fandoavam-bola. Mila hamarinina amin'ny mpilalao mahay ny topology sy ny antsipirian'ny fitsipika alohan'ny hampiasana azy amin'ny tournoi.
+## Sata ankehitriny
+Misy fomba filalaovana roa: **miady amin'ny AI** na **olona roa mifandimby amin'ny écran iray**. Afaka misafidy loko ny mpilalao ary manalehibe na mampihena ny solaitrabe. Ny AI dia mampiasa search minimax sy fanombanana ny vato ary ny fahafahan'ny mpilalao mihetsika; mbola mila fanatsarana sy fitsapana amin'ny mpilalao Fanorona mahay izy.
+
+Misy formulaire handefasana hevitra momba ny lalao sy ny fifaninanana. Manokatra ny application email an'ny mpilalao izy, ka tsy mitahiry na mandefa hafatra ho azy ny tranonkala raha tsy tsindrin'ny mpilalao ny Send ao amin'ny email-ny.
+
+Mbola tsy misy kaonty, multiplayer amin'ny Internet, na fitahirizana tantara sy hafatra amin'ny server. Tsy tokony hambara ho efa vonona ny fifaninanana lehibe raha tsy vita ny fanamarinana sy ny rafitra ilaina.
 
 ## Hijery sy hanandrana
-- Sokafy ny `index.html` amin'ny navigateur, na alefaso amin'ny static hosting toy ny GitHub Pages/Vercel.
-- Ny `styles.css` no endrika responsive.
+- Lalao: https://raismrakotoniaina-hash.github.io/fanorona-online/
+- Repository: https://github.com/raismrakotoniaina-hash/fanorona-online
+- Alefaso amin'ny navigateur na static hosting ny `index.html`.
+- Ny `styles.css` no mifehy ny endrika responsive sy ny zoom.
 - Ny `app.js` no mitantana ny interface sy ny fifandimbiasan'ny mpilalao.
-- Ny `game/engine.js` no mitahiry ny logic fototry ny lalao.
-- Ny `game/vela.js` no mitantana ny dingana Vela sy ny scoring manokana 5–3 / 8–0.
-- Ny `game/vela-board.js` no manamarina ny fanolorana vato sy ny fakana ilay vato natolotra amin'ny solaitrabe efa misy; mbola tsy tafiditra amin'ny UI sy ny fametrahana manokana ny vato Vela izy.
-- Ny `tests/engine.test.js`, `tests/vela.test.js` ary `tests/vela-board.test.js` no fitsapana mandeha amin'ny `npm test`; GitHub Actions no manandrana azy isaky ny push.
-
-## Antontan-taratasy
-- [Lalana fampandrosoana](docs/ROADMAP.md)
-- [Fitsipika sy fitantanana fifaninanana](docs/TOURNAMENT_RULES.md)
+- Ny `game/engine.js` no logic fototry ny lalao.
+- Ny `game/ai.js` no misafidy hetsika ho an'ny AI.
+- Ny `game/vela.js` sy `game/vela-board.js` no mitantana ny dingana Vela.
+- Ny `tests/` no misy ny fitsapana mandeha amin'ny `npm test`; GitHub Actions no mampandeha azy isaky ny fanovana.
 
 ## Filaharan'ny asa
-1. Hamarino amin'ny fitsapana sy mpilalao mahay ny topology sy ny fitsipiky ny game engine.
-2. Fenoy ny fitsapana amin'ny toe-javatra sarotra sy ny fiafaran'ny lalao.
-3. Ampiharo ny Vela be sy ny scoring manokana amin'ny tournoi.
+1. Hamafiso ny fiafaran'ny lalao sy ny fitsipika manokana Riatra/Vela.
+2. Andramo amin'ny finday ny safidy loko, ny zoom, ny AI ary ny lalao eo amin'ny écran iray.
+3. Hatsarao tsikelikely ny AI sy ny fitsapana amin'ny toe-javatra sarotra.
 4. Ampidiro backend, kaonty, multiplayer ary tantaran'ny lalao.
-5. Amboary ny fitantanana fifaninanana sy audit log.
+5. Angony ny hevitra sy ny mpilalao liana, ary omanina ny rafitra fifaninanana.
 6. Diniho ny lalàna sy ny saram-pandoavana alohan'ny hampidirana saram-pidirana na loka.
 
-## Fiarovana
-Ny vokatra sy ny hetsika amin'ny lalao tena izy dia tsy maintsy hamarinina ao amin'ny server. Tsy tokony hapetraka ao amin'ny frontend ny secret keys. Tsy tokony hisy fifaninanana misy saram-pidirana na loka vola raha tsy voamarina ny fepetra ara-dalàna sy ara-bola.
+## Fiarovana sy fepetra
+- Tsy mila API AI ivelany amin'izao ny AI mpifanandrina; mandeha ao amin'ny navigateur izy.
+- Ny vokatra sy ny hetsika amin'ny lalao fifaninanana dia tokony hohamarinin'ny server.
+- Tsy tokony hapetraka ao amin'ny frontend ny secret keys.
+- Tsy tokony hisy fifaninanana misy saram-pidirana na loka vola raha tsy voamarina ny fepetra ara-dalàna sy ara-bola.
