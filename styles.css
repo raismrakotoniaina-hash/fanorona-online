@@ -94,3 +94,22 @@ h1{font-size:clamp(48px,6vw,78px);line-height:.99;margin:22px 0 22px;font-weight
 .move-choice .button{touch-action:manipulation;cursor:pointer;min-height:44px}
 #stop-capture{touch-action:manipulation;min-height:44px}
 .board-point{touch-action:manipulation;user-select:none;-webkit-user-select:none}
+
+/* Game controls and accessible board zoom */
+.game-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0 12px}
+.game-controls label,.feedback-form label{display:flex;flex-direction:column;gap:7px;color:#c7d1df;font-size:11px;font-weight:600}
+.game-controls select,.feedback-form input,.feedback-form select,.feedback-form textarea{width:100%;min-height:42px;border:1px solid rgba(207,220,239,.2);border-radius:9px;padding:10px 12px;background:#0f1929;color:var(--text);font:inherit}
+.board-zoom{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 10px;color:var(--muted);font-size:10px}
+.board-zoom span{margin-right:auto}
+.board-zoom button{min-width:40px;min-height:36px;border:1px solid rgba(237,199,123,.38);border-radius:8px;background:#172338;color:var(--gold);font-size:16px;cursor:pointer}
+.board-zoom #zoom-reset{font-size:11px}
+.board-wrap{overflow:auto;overscroll-behavior-x:contain}
+.game-board{transform-origin:top left}
+.board-point{min-width:24px;min-height:24px}
+.feedback-section{padding-top:20px}
+.feedback-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:22px;border:1px solid var(--line);border-radius:15px;background:rgba(18,28,45,.7)}
+.feedback-form .feedback-message{grid-column:1/-1}
+.feedback-form textarea{resize:vertical;min-height:120px}
+.feedback-form .small-note,.feedback-status{grid-column:1/-1;margin:0;color:var(--muted);font-size:10px}
+.feedback-form button{justify-self:start}
+@media(max-width:520px){.game-controls{grid-template-columns:1fr}.feedback-form{grid-template-columns:1fr;padding:16px}.feedback-form .feedback-message{grid-column:auto}.board-point{min-width:26px;min-height:26px}}
