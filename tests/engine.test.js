@@ -141,8 +141,8 @@ test("manome safidy approach sy withdrawal rehefa samy azo atao amin'ny toerana 
   const board = Array(45).fill(null);
   board[indexOf(2, 2)] = LIGHT;
   board[indexOf(2, 1)] = DARK;
-  board[indexOf(2, 3)] = DARK;
+  board[indexOf(2, 4)] = DARK;
   const options = legalMoves(board, LIGHT, indexOf(2, 2))
-    .filter(move => move.to === indexOf(2, 4));
+    .filter(move => move.to === indexOf(2, 3));
   assert.deepEqual(options.map(move => move.mode).sort(), ["approach", "withdrawal"]);
 });
