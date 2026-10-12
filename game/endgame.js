@@ -26,16 +26,10 @@ export function recordEndgamePosition(tracker, board, nextPlayer, capturedThisTu
     if (piece) result[piece] += 1;
     return result;
   }, { light: 0, dark: 0 });
-  const sortedCounts = [counts.light, counts.dark].sort((a, b) => a - b);
 
-  if (sortedCounts[0] === 2 && sortedCounts[1] === 3) {
-    return { reason: "low-material", counts };
-  }
-  if (occurrences >= REPETITION_LIMIT) {
-    return { reason: "repetition", counts };
-  }
-  if (tracker.quietTurns >= MAX_QUIET_TURNS) {
-    return { reason: "no-capture-limit", counts };
-  }
+  // Tsy mamarana lalao amin'ny isan'ny vato fotsiny: ny toerana sy ny
+  // fiverimberenan'ny lalao no jerena, mba tsy hampitsahatra 3-4 na 5-3 an-jambany.
+  if (occurrences >= REPETITION_LIMIT) return { reason: "repetition", counts };
+  if (tracker.quietTurns >= MAX_QUIET_TURNS) return { reason: "no-capture-limit", counts };
   return null;
 }
