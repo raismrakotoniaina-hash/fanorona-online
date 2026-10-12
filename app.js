@@ -31,6 +31,7 @@ import {
   const moveChoice = document.createElement("div");
   moveChoice.className = "move-choice";
   moveChoice.hidden = true;
+  moveChoice.style.pointerEvents = "none";
   moveChoice.setAttribute("role", "group");
   moveChoice.setAttribute("aria-label", "Safidio ny lalana fakana vato");
   if (message) message.insertAdjacentElement("afterend", moveChoice);
@@ -284,25 +285,32 @@ import {
 
   function hideMoveChoice() {
     moveChoice.hidden = true;
+    moveChoice.style.pointerEvents = "none";
     moveChoice.replaceChildren();
   }
 
   function showMoveChoice(options) {
     moveChoice.replaceChildren();
     moveChoice.hidden = false;
+    moveChoice.style.pointerEvents = "auto";
     const title = document.createElement("p");
-    title.textContent = "Misy lalana maromaro azo isafidianana. Safidio izay tianao:";
+    title.textContent = "Safidio ny fomba fakana amin’ity toerana ity:";
     moveChoice.appendChild(title);
     options.forEach((move, index) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "button button-outline";
+      button.dataset.captureMode = move.mode || "";
       button.textContent = move.mode === "approach"
-        ? "Lalana " + (index + 1) + " — fakana avy eo aloha"
+        ? "Fakana avy eo aloha (" + move.victims.length + " vato)"
         : move.mode === "withdrawal"
-          ? "Lalana " + (index + 1) + " — fakana avy ao aoriana"
+          ? "Fakana avy ao aoriana (" + move.victims.length + " vato)"
           : "Lalana " + (index + 1);
-      button.addEventListener("click", () => commitMove(move));
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        commitMove(move);
+      });
       moveChoice.appendChild(button);
     });
     const cancel = document.createElement("button");
@@ -319,7 +327,7 @@ import {
       return;
     }
     hideMoveChoice();
-    const movingFrom = selected;
+    const movingFrom = move.from;
     const oldContext = turnContext;
     selected = null;
 
