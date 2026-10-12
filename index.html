@@ -17,6 +17,7 @@
     <nav class="nav-links" aria-label="Fikarohana">
       <a href="#lalao">Lalao</a>
       <a href="#fifaninanana">Fifaninanana</a>
+      <a href="#hevitra">Hevitra</a>
       <a href="#fitsipika">Fitsipika</a>
     </nav>
     <a class="top-cta" href="#lalao">Hanomboka <span aria-hidden="true">↗</span></a>
@@ -27,7 +28,7 @@
       <div class="hero-copy">
         <div class="eyebrow"><span class="live-dot"></span> LOVA MALAGASY · VANIM-POTOANA VAOVAO</div>
         <h1>Ny paikady.<br><span>Ny lova.</span><br>Ny Fanorona.</h1>
-        <p>Lalao Fanorona malagasy, entina amin'ny sehatra an-tserasera. Manaova fanazaran-tena, miomàna amin'ny fifaninanana, ary asehoy ny fahaizanao.</p>
+        <p>Lalaova Fanorona malagasy amin’ny AI na miaraka amin’ny namana amin’ny fitaovana iray. Ampio izahay hanangona ny mpilalao sy hanomana fifaninanana lehibe.</p>
         <div class="hero-actions">
           <a class="button button-primary" href="#lalao">Hijery ny solaitrabe <span>→</span></a>
           <a class="button button-quiet" href="#fitsipika">Hahafantatra ny fitsipika</a>
@@ -51,7 +52,7 @@
 
     <section class="stats" aria-label="Ny sehatra">
       <div><strong>01</strong><span>Lalao nentim-paharazana</span></div>
-      <div><strong>AI</strong><span>Mpifanandrina marani-tsaina — ho avy</span></div>
+      <div><strong>AI</strong><span>Mpifanandrina ao anatin’ny lalao</span></div>
       <div><strong>MG</strong><span>Sehatra amin'ny teny Malagasy</span></div>
       <div><strong>∞</strong><span>Paikady tsy manam-petra</span></div>
     </section>
@@ -59,23 +60,37 @@
     <section class="play-section section" id="lalao">
       <div class="section-heading">
         <div><div class="eyebrow">NY DINGANA VOALOHANY</div><h2>Midira amin'ny <span>lalao.</span></h2></div>
-        <p>Ity dia lalao fanazarana eo amin'ny fitaovana iray: mifandimby ny vato fotsy sy mainty, ary ampiharina ny fakana vato fototra. Mbola hamarinina ny fitsipika sy ny topology alohan'ny fifaninanana.</p>
+        <p>Safidio ny hilalao amin’ny AI na olona roa amin’ny écran iray. Ny fanangonana mpilalao sy ny fanatsarana ny lalao no laharam-pahamehana; omanina mialoha ny rafitra ho an’ny fifaninanana lehibe.</p>
       </div>
       <div class="game-layout">
         <div class="board-panel">
-          <div class="board-head"><div><span class="board-kicker">FANORONA RIATRA</span><h3>Lalao fanazarana</h3></div><span class="prototype-pill"><i></i> SANTATRA</span></div>
-          <div class="riatra-timer" id="riatra-timer" role="timer" aria-live="polite" hidden>Fotoana sisa amin’ny Riatra: 05:00</div>
-          <div class="board-wrap"><div class="game-board" id="game-board" role="group" aria-label="Solaitrabe Fanorona"></div></div>
+          <div class="board-head"><div><span class="board-kicker">FANORONA RIATRA</span><h3>Lalao fanazarana</h3></div><span class="prototype-pill"><i></i> LALAO</span></div>
+          <div class="riatra-timer" id="riatra-timer" role="timer" aria-live="polite" hidden>Fotoana sisa amin’ny Riatra: 02:00</div>
+          <div class="game-controls" aria-label="Safidy lalao">
+            <label>Fomba filalaovana
+              <select id="game-mode"><option value="local">Olona roa amin’ny écran iray</option><option value="ai">Miady amin’ny AI</option></select>
+            </label>
+            <label>Lokon’ny vatoko
+              <select id="human-color"><option value="light">Fotsy</option><option value="dark">Mainty</option></select>
+            </label>
+          </div>
+          <div class="board-zoom" aria-label="Haben’ny solaitrabe">
+            <span>Haben’ny solaitrabe</span>
+            <button type="button" id="zoom-out" aria-label="Ahena ny solaitrabe">−</button>
+            <button type="button" id="zoom-reset" aria-label="Habe mahazatra">100%</button>
+            <button type="button" id="zoom-in" aria-label="Alehibeazina ny solaitrabe">+</button>
+          </div>
+          <div class="board-wrap"><div class="board-wrap-inner"><div class="game-board" id="game-board" role="group" aria-label="Solaitrabe Fanorona"></div></div>
           <div class="board-legend"><span><i class="stone stone-light"></i> Vato fotsy</span><span><i class="stone stone-dark"></i> Vato mainty</span><span class="legend-note">Solaitrabe 9 × 5</span></div>
         </div>
         <aside class="game-aside">
           <div class="aside-icon">♟</div>
           <div class="eyebrow">FANAZARAN-TENA</div>
           <h3>Atombohy amin'ny paikady.</h3>
-          <p>Afaka milalao eto ny olona roa amin'ny finday na solosaina iray. Tsy mbola misy multiplayer amin'ny internet, kaonty na fitahirizana tantara.</p>
+          <p>Milalaova amin’ny AI na mifandimby amin’ny namana amin’ny fitaovana iray. Safidio ny lokon’ny vato ary alehibeazina ny solaitrabe raha ilaina.</p>
           <div class="feature-line"><span>01</span><div><strong>Solaitrabe 45 toerana</strong><small>Endrika mahazatra 9 × 5</small></div></div>
           <div class="feature-line"><span>02</span><div><strong>Fitsipika marina</strong><small>Hetsika sy fakana vato voasedra</small></div></div>
-          <div class="feature-line"><span>03</span><div><strong>Multiplayer</strong><small>Hampiana rehefa vonona ny backend</small></div></div>
+          <div class="feature-line"><span>03</span><div><strong>Hevitry ny mpilalao</strong><small>Alefaso aminay ny soso-kevitrao</small></div></div>
           <button class="button button-outline full-button" id="stop-capture" type="button" hidden>Atsaharo eto ny anjara — tsy voatery hanohy fakana <span>✓</span></button>
           <button class="button button-outline full-button" id="reset-board" type="button">Avereno ny solaitrabe <span>↻</span></button>
           <p class="small-note" id="board-message" role="status">Lalao vaovao. Anjaran'ny vato fotsy.</p>
@@ -97,10 +112,29 @@
         <p>Ny tanjona dia sehatra azo itokisana ho an'ny mpilalao sy ny mpikarakara fifaninanana.</p>
       </div>
       <div class="feature-grid">
-        <article class="feature-card"><div class="card-number">01 / LALAO</div><div class="card-symbol">⌘</div><h3>Fanorona Riatra</h3><p>Hatsangana ny game engine, ny fanamarinana hetsika, ary ny fitsapana mba hanajana ny fitsipika.</p><span class="card-status">FITSAPANA MITOHY</span></article>
+        <article class="feature-card"><div class="card-number">01 / LALAO</div><div class="card-symbol">⌘</div><h3>Fanorona Riatra</h3><p>Hohamafisina ny fitsipika, ny fiafaran’ny lalao, ary ny AI mpifanandrina.</p><span class="card-status">FITSAPANA MITOHY</span></article>
         <article class="feature-card feature-card-highlight"><div class="card-number">02 / VELA BE</div><div class="card-symbol">✧</div><h3>Fomba Vela be</h3><p>Hampidirina misaraka ny dingana roa sy ny kajy vokatra araka ny fitsipika nifanarahana amin'ny fifaninanana.</p><span class="card-status">VOALAMINA HO AMIN'NY BUILD</span></article>
-        <article class="feature-card"><div class="card-number">03 / TOURNOI</div><div class="card-symbol">♜</div><h3>Fifaninanana</h3><p>Fisoratana anarana, fandaminana araka ny isan'ny mpandray anjara, vokatra ary tantara azo jerena.</p><span class="card-status">DINGANA MANARAKA</span></article>
+        <article class="feature-card"><div class="card-number">03 / TOURNOI</div><div class="card-symbol">♜</div><h3>Fifaninanana</h3><p>Hanangona mpilalao liana aloha isika, ary hanomana ny fisoratana anarana sy ny fitantanana fifaninanana lehibe.</p><span class="card-status">DINGANA MANARAKA</span></article>
       </div>
+    </section>
+
+    <section class="feedback-section section" id="hevitra">
+      <div class="section-heading">
+        <div><div class="eyebrow">ANJARAN’NY MPIALAO</div><h2>Ampitao anay ny <span>hevitrao.</span></h2></div>
+        <p>Te hahafantatra izay tian’ny mpilalao izahay: fitsipika, fanatsarana, AI, ary hevitra momba ny fifaninanana lehibe kasaina hatao.</p>
+      </div>
+      <form class="feedback-form" id="feedback-form">
+        <label>Anaranao (tsy voatery)<input id="feedback-name" name="name" maxlength="80" autocomplete="name" placeholder="Anarana na solon’anarana"></label>
+        <label>Lohahevitra
+          <select id="feedback-topic" name="topic">
+            <option>Hevitra ankapobeny</option><option>Fanatsarana ny lalao</option><option>AI mpifanandrina</option><option>Fitsipika Fanorona</option><option>Fifaninanana lehibe</option>
+          </select>
+        </label>
+        <label class="feedback-message">Hafatrao <textarea id="feedback-message" name="message" rows="5" maxlength="4000" required placeholder="Soraty eto ny hevitrao na ny zavatra tianao ho hita..."></textarea></label>
+        <button class="button button-primary" type="submit">Alefaso amin’ny email <span>→</span></button>
+        <p class="small-note">Hisokatra ny application email-nao miaraka amin’ny hafatra voaomana. Tsy tehirizina amin’ity tranonkala ity ny hafatra.</p>
+        <p class="feedback-status" id="feedback-status" role="status"></p>
+      </form>
     </section>
 
     <section class="rules-banner section" id="fitsipika">
