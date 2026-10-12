@@ -462,7 +462,6 @@ import {
     turnContext = null;
     stopCaptureButton.hidden = true;
     completeTurn();
-    setMessage("Nofaranana ny fakana. Anjaran’ny " + (turn === LIGHT ? "vato fotsy" : "vato mainty") + ".");
     renderBoard();
   });
 
