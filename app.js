@@ -34,7 +34,16 @@ import {
   moveChoice.style.pointerEvents = "none";
   moveChoice.setAttribute("role", "group");
   moveChoice.setAttribute("aria-label", "Safidio ny lalana fakana vato");
-  if (message) message.insertAdjacentElement("afterend", moveChoice);
+  // Apetraho eo ambanin’ny solaitrabe ny safidy sy ny bokotra famaranana,
+  // mba ho hita avy hatrany amin’ny finday fa tsy miafina ao amin’ny sidebar.
+  const boardPanel = boardEl ? boardEl.closest(".board-panel") : null;
+  const boardLegend = boardPanel ? boardPanel.querySelector(".board-legend") : null;
+  if (boardLegend) {
+    boardLegend.insertAdjacentElement("afterend", moveChoice);
+    if (stopCaptureButton) moveChoice.insertAdjacentElement("afterend", stopCaptureButton);
+  } else if (message) {
+    message.insertAdjacentElement("afterend", moveChoice);
+  }
   const ROWS = 5;
   const COLS = 9;
   let board = initialBoard();
@@ -319,6 +328,12 @@ import {
     cancel.textContent = "Aoka aloha";
     cancel.addEventListener("click", hideMoveChoice);
     moveChoice.appendChild(cancel);
+    moveChoice.setAttribute("aria-live", "polite");
+    const firstChoice = moveChoice.querySelector("button");
+    if (firstChoice) {
+      firstChoice.focus({ preventScroll: true });
+      moveChoice.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
   }
 
   function commitMove(move) {
@@ -437,9 +452,17 @@ import {
     commitMove(options[0]);
   }
 
-  if (stopCaptureButton) stopCaptureButton.addEventListener("click", () => {
+  if (stopCaptureButton) stopCaptureButton.addEventListener("click", (event) => {
+    event.preventDefault();
     if (!turnContext || gameOver) return;
+    // Ny fakana voalohany dia tsy maintsy atao; rehefa tonga eto kosa,
+    // dia safidin’ny mpilalao ny tsy hanohy intsony ny fakana mitohy.
+    hideMoveChoice();
+    selected = null;
+    turnContext = null;
+    stopCaptureButton.hidden = true;
     completeTurn();
+    setMessage("Nofaranana ny fakana. Anjaran’ny " + (turn === LIGHT ? "vato fotsy" : "vato mainty") + ".");
     renderBoard();
   });
 
