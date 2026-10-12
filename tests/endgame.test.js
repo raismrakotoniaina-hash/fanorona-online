@@ -37,7 +37,9 @@ test("tapitra ho sahala ny Vela be rehefa 3 manoloana 2 sisa", () => {
   const tracker = createEndgameTracker();
   resetEndgameTracker(tracker, board, LIGHT);
   assert.equal(recordEndgamePosition(tracker, board, LIGHT, false, "vela").reason, "vela-three-vs-two");
-  assert.equal(recordEndgamePosition(tracker, board, LIGHT, false, "riatra"), null);
+  const riatraTracker = createEndgameTracker();
+  resetEndgameTracker(riatraTracker, board, LIGHT);
+  assert.equal(recordEndgamePosition(riatraTracker, board, LIGHT, false, "riatra"), null);
 });
 
 test("draw automatique rehefa miverina in-telo ny position miaraka amin'ny anjaran'ny mpilalao", () => {
