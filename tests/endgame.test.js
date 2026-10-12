@@ -24,7 +24,20 @@ test("sahala ny Riatra rehefa 1 manoloana 5 ary tsy misy fakana ara-dalàna", ()
   for (let i = 36; i <= 40; i += 1) board[i] = DARK;
   const tracker = createEndgameTracker();
   resetEndgameTracker(tracker, board, LIGHT);
-  assert.equal(recordEndgamePosition(tracker, board, LIGHT, false).reason, "low-material-no-capture");
+  assert.equal(recordEndgamePosition(tracker, board, LIGHT, false).reason, "one-vs-five");
+});
+
+test("tapitra ho sahala ny Vela be rehefa 3 manoloana 2 sisa", () => {
+  const board = Array(45).fill(null);
+  board[0] = LIGHT;
+  board[2] = LIGHT;
+  board[4] = LIGHT;
+  board[40] = DARK;
+  board[42] = DARK;
+  const tracker = createEndgameTracker();
+  resetEndgameTracker(tracker, board, LIGHT);
+  assert.equal(recordEndgamePosition(tracker, board, LIGHT, false, "vela").reason, "vela-three-vs-two");
+  assert.equal(recordEndgamePosition(tracker, board, LIGHT, false, "riatra"), null);
 });
 
 test("draw automatique rehefa miverina in-telo ny position miaraka amin'ny anjaran'ny mpilalao", () => {
