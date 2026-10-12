@@ -9,6 +9,7 @@ import {
 import {
   createVelaBoard, legalOfferMoves, legalVelaCaptures, applyVelaOffer, applyVelaCapture
 } from "./game/vela-board.js";
+import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from "./game/endgame.js";
 
 (() => {
   "use strict";
@@ -55,8 +56,33 @@ import {
   let velaOfferedIndex = null;
   let riatraDeadline = null;
   let riatraTimerInterval = null;
+  const endgameTracker = createEndgameTracker();
+  let turnHadCapture = false;
 
   if (year) year.textContent = String(new Date().getFullYear());
+  resetEndgameTracker(endgameTracker, board, turn);
+
+  function checkEndgameDraw(nextPlayer) {
+    const result = recordEndgamePosition(endgameTracker, board, nextPlayer, turnHadCapture);
+    turnHadCapture = false;
+    return result;
+  }
+
+  function endRiatraAsDraw(result) {
+    stopRiatraTimer();
+    gameOver = true;
+    selected = null;
+    turnContext = null;
+    hideMoveChoice();
+    if (stopCaptureButton) stopCaptureButton.hidden = true;
+    const reason = result.reason === "low-material"
+      ? "Vato telo sy roa sisa no tavela; raisina ho sahala ny lalao."
+      : result.reason === "repetition"
+        ? "Niverina in-telo ny toerana mitovy sy ny anjaran'ny mpilalao."
+        : "Tsy nisy fakana vato nandritra ny hetsika 60.";
+    setMessage("SAHALA NY RIATRA! " + reason + " Isa 2 avy: Fotsy 2 — Mainty 2. Tsy misy Vela satria tsy nisy mpandresy.");
+    renderBoard();
+  }
 
   function stopRiatraTimer() {
     if (riatraTimerInterval !== null) {
