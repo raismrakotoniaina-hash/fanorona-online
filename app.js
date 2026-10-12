@@ -198,6 +198,7 @@ import { chooseAiMove } from "./game/ai.js";
     if ((row + col) % 2 === 0) node.classList.add("diag-strong");
     if (!decorative) {
       node.type = "button";
+      node.disabled = isAiTurn();
       node.setAttribute("aria-label", pointLabel(i) + (board[i] ? ", vato " + (board[i] === LIGHT ? "fotsy" : "mainty") : ", foana"));
       node.setAttribute("aria-pressed", String(selected === i));
       if (selected === i) node.classList.add("is-selected");
