@@ -18,7 +18,7 @@ function positionKey(board, nextPlayer) {
   return board.map(piece => piece || "-").join("") + "|" + nextPlayer;
 }
 
-export function recordEndgamePosition(tracker, board, nextPlayer, capturedThisTurn) {
+export function recordEndgamePosition(tracker, board, nextPlayer, capturedThisTurn, phase = "riatra") {
   tracker.quietTurns = capturedThisTurn ? 0 : tracker.quietTurns + 1;
   const key = positionKey(board, nextPlayer);
   const occurrences = (tracker.positions.get(key) || 0) + 1;
@@ -33,13 +33,13 @@ export function recordEndgamePosition(tracker, board, nextPlayer, capturedThisTu
   // satria tsy tohizana amin'ny fifamezivezena tsy misy fiafarana ilay lalao.
   const low = Math.min(counts.light, counts.dark);
   const high = Math.max(counts.light, counts.dark);
-  if (low === 1 && high === 5) return { reason: "one-vs-five", counts };
+  if (phase === "riatra" && low === 1 && high === 5) return { reason: "one-vs-five", counts };
 
   // Tsy mamarana lalao amin'ny isan'ny vato fotsiny: ny toerana sy ny
   // fiverimberenan'ny lalao no jerena, mba tsy hampitsahatra 3-4 na 5-3 an-jambany.
   // Vela be, dingana faharoa: rehefa vato 3 sy 2 sisa no tavela,
   // raisina ho sahala ny Vela; tsy ampiharina amin'ny Riatra ny fepetra isa 3-2.
-  if (low === 2 && high === 3) return { reason: "vela-three-vs-two", counts };
+  if (phase === "vela" && low === 2 && high === 3) return { reason: "vela-three-vs-two", counts };
 
   if (occurrences >= REPETITION_LIMIT) return { reason: "repetition", counts };
   if (tracker.quietTurns >= MAX_QUIET_TURNS) return { reason: "no-capture-limit", counts };
