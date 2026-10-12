@@ -362,13 +362,13 @@ import {
             setMessage("Vato dimy sisa. Manomboka ny dingana faharoa amin’ny Vela be.");
           } else {
             turn = velaSession.riatraWinner;
-            setMessage("Voaray ilay vato natolotra. Anjaran’ny mpandresy ny manolotra indray.");
+            setMessage("Vato iray no nesorina. Anjaran’ny mpandresy indray ny manolotra.");
           }
         }
         turnContext = null;
 
         // Vela be dingana voalohany: tsy avela hijanona tsy misy valiny ny solaitrabe.
-        // Raha tsy afaka maka ilay vato natolotra ny mpilalao Vela, tsy afaka izy.
+        // Raha tsy misy fakana ara-dalàna aorian'ny fanolorana, dia tsy afaka Vela izy.
         if (velaSession.phase === VELA_PHASE.OFFERING &&
             turn === velaSession.velaPlayer &&
             velaOfferedIndex !== null &&
@@ -376,10 +376,10 @@ import {
           velaSession = completeVelaOffering(velaSession, false);
           gameOver = true;
           velaOfferedIndex = null;
-          setMessage("TAPITRA NY VELA BE: tsy afaka naka ilay vato natolotra ny mpilalao Vela. Vokatra 8–0.");
+          setMessage("TAPITRA NY VELA BE: tsy nisy fakana ara-dalàna azon’ny mpilalao Vela natao. Vokatra 8–0.");
         }
 
-        // Rehefa avy naka ny vato natolotra ny mpilalao Vela, raha tsy misy
+        // Rehefa avy naka vato ny mpilalao Vela, raha tsy misy
         // fanolorana ara-dalàna intsony, dia tapitra ho azy ny dingana voalohany.
         if (velaSession.phase === VELA_PHASE.OFFERING &&
             turn === velaSession.riatraWinner &&
