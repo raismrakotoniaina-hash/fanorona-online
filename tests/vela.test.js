@@ -53,6 +53,13 @@ test("tsy mamela hampiditra vokatra alohan'ny dingana faharoa", () => {
   assert.throws(() => completeVela(s, true));
 });
 
+test("afaka mifarana ho azy ny Vela raha tapitra ny hetsika amin'ny dingana voalohany", () => {
+  const s = createVelaSession({ riatraWinner: "light", winnerPiecesAfterRiatra: 8 });
+  const result = completeVela(s, true);
+  assert.equal(result.phase, VELA_PHASE.COMPLETED);
+  assert.deepEqual(result.score, { light: 5, dark: 3 });
+});
+
 test("mandà isa vato tsy mety", () => {
   assert.throws(() => createVelaSession({ riatraWinner: "light", winnerPiecesAfterRiatra: 4 }));
 });
