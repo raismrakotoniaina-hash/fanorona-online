@@ -139,7 +139,7 @@ import {
         return legalOfferMoves(board, velaSession.riatraWinner, velaSession.velaPlayer).filter(move => move.from === from);
       }
       if (turn === velaSession.velaPlayer && velaOfferedIndex !== null) {
-        return legalVelaCaptures(board, velaSession.velaPlayer, velaOfferedIndex).filter(move => move.from === from);
+        return legalVelaCaptures(board, velaSession.velaPlayer).filter(move => move.from === from);
       }
     }
     return legalMoves(board, turn, from, turnContext);
@@ -179,7 +179,7 @@ import {
       if (velaSession.phase === VELA_PHASE.OFFERING) {
         velaAction.textContent =
           "Mbola " + velaSession.winnerPieces + " ny vaton'ny mpandresy Riatra. " +
-          "Ny mpandresy no manolotra vato amin’ny solaitrabe vaovao; tsy maintsy maka ilay vato natolotra ny mpilalao Vela.";
+          "Ny mpandresy no mamindra vato mba hanomezana fahafahana haka. Afaka misafidy izay vato azon’ny lalàna alaina ny mpilalao Vela, fa vato iray ihany isaky ny anjara.";
       } else if (velaSession.phase === VELA_PHASE.FINAL_GAME) {
         velaAction.textContent =
           "Vato dimy sisa. Mitohy eo amin’ity solaitrabe ity ny lalao: ny mpandresy Riatra mitady haka ny vato rehetra an’ny Vela.";
@@ -352,9 +352,9 @@ import {
           board = applyVelaOffer(board, move, velaSession.riatraWinner, velaSession.velaPlayer);
           velaOfferedIndex = move.to;
           turn = velaSession.velaPlayer;
-          setMessage("Vato natolotra. Anjaran’ny Vela ny maka ilay vato voamarika.");
+          setMessage("Vita ny fanomezana fahafahana haka. Safidio izay vato ara-dalàna hohanina; iray ihany no esorina amin’ity anjara ity.");
         } else {
-          board = applyVelaCapture(board, move, velaSession.velaPlayer, velaOfferedIndex);
+          board = applyVelaCapture(board, move, velaSession.velaPlayer);
           velaSession = recordOfferTaken(velaSession);
           velaOfferedIndex = null;
           if (velaSession.phase === VELA_PHASE.FINAL_GAME) {
@@ -372,7 +372,7 @@ import {
         if (velaSession.phase === VELA_PHASE.OFFERING &&
             turn === velaSession.velaPlayer &&
             velaOfferedIndex !== null &&
-            legalVelaCaptures(board, velaSession.velaPlayer, velaOfferedIndex).length === 0) {
+            legalVelaCaptures(board, velaSession.velaPlayer).length === 0) {
           velaSession = completeVelaOffering(velaSession, false);
           gameOver = true;
           velaOfferedIndex = null;
