@@ -136,3 +136,13 @@ test("une pièce ne peut pas aller sur une position occupée", () => {
   board[indexOf(1, 2)] = DARK;
   assert.equal(legalMoves(board, LIGHT, indexOf(1, 1)).some(m => m.to === indexOf(1, 2)), false);
 });
+
+test("manome safidy approach sy withdrawal rehefa samy azo atao amin'ny toerana iray", () => {
+  const board = Array(45).fill(null);
+  board[indexOf(2, 2)] = LIGHT;
+  board[indexOf(2, 1)] = DARK;
+  board[indexOf(2, 3)] = DARK;
+  const options = legalMoves(board, LIGHT, indexOf(2, 2))
+    .filter(move => move.to === indexOf(2, 4));
+  assert.deepEqual(options.map(move => move.mode).sort(), ["approach", "withdrawal"]);
+});
