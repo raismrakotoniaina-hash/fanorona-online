@@ -40,8 +40,9 @@ export function recordOfferTaken(session) {
 }
 
 export function completeVela(session, escaped) {
-  if (!session || session.phase !== VELA_PHASE.FINAL_GAME) {
-    throw new Error("Tsy mbola tonga amin'ny dingana faharoa ny Vela.");
+  if (!session ||
+      (session.phase !== VELA_PHASE.FINAL_GAME && session.phase !== VELA_PHASE.OFFERING)) {
+    throw new Error("Tsy ao amin'ny dingana Vela azo faranana ny lalao.");
   }
   if (typeof escaped !== "boolean") {
     throw new TypeError("escaped must be true or false");
