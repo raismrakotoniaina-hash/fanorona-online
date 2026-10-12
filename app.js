@@ -269,6 +269,21 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from
       return;
     }
     turn = nextPlayer;
+    const velaDraw = checkEndgameDraw(turn);
+    if (velaDraw) {
+      // Ny sahala amin'ny Vela dia midika fa tsy afa-bela ilay resy tamin'ny Riatra:
+      // mahazo isa 3 fanampiny ilay mpandresy Riatra (vokatra 8–0).
+      velaSession = completeVela(velaSession, false);
+      gameOver = true;
+      setMessage("SAHALA NY VELA BE: " +
+        (velaDraw.reason === "low-material" ? "vato telo sy roa sisa no tavela." :
+          velaDraw.reason === "repetition" ? "miverimberina ny toerana ka tsy misy fandrosoana." :
+            "tsy nisy fakana vato nandritra ny hetsika 60.") +
+        " Tsy afa-bela ilay mpilalao Vela. Mahazo isa 3 fanampiny ny mpandresy Riatra. Vokatra 8–0.");
+      renderVelaPanel();
+      renderBoard();
+      return;
+    }
     if (!allLegalMoves(board, turn).length) {
       const escaped = turn === velaSession.riatraWinner;
       velaSession = completeVela(velaSession, escaped);
@@ -292,6 +307,11 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from
     return;
   }
   turn = nextPlayer;
+  const riatraDraw = checkEndgameDraw(turn);
+  if (riatraDraw) {
+    endRiatraAsDraw(riatraDraw);
+    return;
+  }
   const nextMoves = allLegalMoves(board, turn);
   if (!nextMoves.length) {
     const otherPlayer = opponent(turn);
@@ -385,6 +405,8 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from
           velaOfferedIndex = null;
           if (velaSession.phase === VELA_PHASE.FINAL_GAME) {
             turn = velaSession.riatraWinner;
+            resetEndgameTracker(endgameTracker, board, turn);
+            turnHadCapture = false;
             setMessage("Vato dimy sisa. Manomboka ny dingana faharoa amin’ny Vela be.");
           } else {
             turn = velaSession.riatraWinner;
@@ -425,6 +447,7 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from
     }
 
     board = applyMove(board, move, turn);
+    if (move.capture) turnHadCapture = true;
 
     if (move.capture) {
       const capturedNow = new Set(oldContext ? oldContext.captured : []);
@@ -540,6 +563,8 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition } from
     stopRiatraTimer();
     velaSession = null;
     velaOfferedIndex = null;
+    turnHadCapture = false;
+    resetEndgameTracker(endgameTracker, board, turn);
     renderVelaPanel();
     renderBoard();
     setMessage("Lalao vaovao. Anjaran'ny vato fotsy.");
