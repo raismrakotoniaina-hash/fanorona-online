@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  createVelaSession, recordOfferTaken, completeVela, getVelaResultLabel, VELA_PHASE
+  createVelaSession, recordOfferTaken, completeVela, completeVelaOffering, getVelaResultLabel, VELA_PHASE
 } from "../game/vela.js";
 import { initialBoard, countPieces, LIGHT, DARK, indexOf } from "../game/engine.js";
 import { createVelaBoard, legalOfferMoves, legalVelaCaptures } from "../game/vela-board.js";
@@ -55,7 +55,7 @@ test("tsy mamela hampiditra vokatra alohan'ny dingana faharoa", () => {
 
 test("afaka mifarana ho azy ny Vela raha tapitra ny hetsika amin'ny dingana voalohany", () => {
   const s = createVelaSession({ riatraWinner: "light", winnerPiecesAfterRiatra: 8 });
-  const result = completeVela(s, true);
+  const result = completeVelaOffering(s, true);
   assert.equal(result.phase, VELA_PHASE.COMPLETED);
   assert.deepEqual(result.score, { light: 5, dark: 3 });
 });
