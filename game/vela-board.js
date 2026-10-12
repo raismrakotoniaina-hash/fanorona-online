@@ -15,8 +15,9 @@ export function createVelaBoard(offerPlayer) {
 
 /**
  * Legal offers for Vela phase 1.
- * The Riatra winner moves one stone without capturing, and the move must
- * leave that offered stone capturable by the Vela player on their next turn.
+ * The Riatra winner moves one stone without capturing. The move is valid
+ * when it gives the Vela player at least one legal capture anywhere on the board.
+ * The Vela player is not forced to capture the stone that was just moved.
  */
 export function legalOfferMoves(board, offerPlayer, velaPlayer) {
   if (opponent(offerPlayer) !== velaPlayer) return [];
@@ -28,19 +29,23 @@ export function legalOfferMoves(board, offerPlayer, velaPlayer) {
       if (board[to] !== null) continue;
       const move = { from, to, capture: false, mode: null, victims: [] };
       const nextBoard = applyMove(board, move, offerPlayer);
-      const canTakeOfferedStone = allLegalMoves(nextBoard, velaPlayer)
-        .some(candidate => candidate.capture && candidate.victims[0] === to);
-      if (canTakeOfferedStone) offers.push(move);
+      const canCaptureAnyStone = allLegalMoves(nextBoard, velaPlayer)
+        .some(candidate => candidate.capture);
+      if (canCaptureAnyStone) offers.push(move);
     }
   }
   return offers;
 }
 
-/** Vela phase 1 removes exactly one stone: the offered stone must be first in the capture line. */
-export function legalVelaCaptures(board, velaPlayer, offeredIndex) {
+/**
+ * Vela phase 1 allows any legal capture, but removes exactly one stone per turn.
+ * If a capture line contains several stones, only its first stone is removed.
+ * Keeping approach/withdrawal as separate moves lets the UI ask the player to choose.
+ */
+export function legalVelaCaptures(board, velaPlayer) {
   return allLegalMoves(board, velaPlayer)
-    .filter(move => move.capture && move.victims[0] === offeredIndex)
-    .map(move => ({ ...move, victims: [offeredIndex] }));
+    .filter(move => move.capture)
+    .map(move => ({ ...move, victims: move.victims.length ? [move.victims[0]] : [] }));
 }
 
 export function applyVelaOffer(board, move, offerPlayer, velaPlayer) {
@@ -50,8 +55,8 @@ export function applyVelaOffer(board, move, offerPlayer, velaPlayer) {
   return applyMove(board, { ...move, capture: false, mode: null, victims: [] }, offerPlayer);
 }
 
-export function applyVelaCapture(board, move, velaPlayer, offeredIndex) {
-  const valid = legalVelaCaptures(board, velaPlayer, offeredIndex)
+export function applyVelaCapture(board, move, velaPlayer) {
+  const valid = legalVelaCaptures(board, velaPlayer)
     .some(candidate =>
       candidate.from === move.from &&
       candidate.to === move.to &&
@@ -59,6 +64,6 @@ export function applyVelaCapture(board, move, velaPlayer, offeredIndex) {
       candidate.victims.length === move.victims.length &&
       candidate.victims.every((victim, i) => victim === move.victims[i])
     );
-  if (!valid) throw new Error("Tsy maintsy maka ilay vato natolotra ny mpilalao Vela.");
+  if (!valid) throw new Error("Tsy ara-dalàna io fakana Vela io.");
   return applyMove(board, move, velaPlayer);
 }
