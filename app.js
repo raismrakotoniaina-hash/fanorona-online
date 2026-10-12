@@ -67,7 +67,8 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
   clockInterval = setInterval(updateRiatraTimer, 250);
 
   function checkEndgameDraw(nextPlayer) {
-    const result = recordEndgamePosition(endgameTracker, board, nextPlayer, turnHadCapture);
+    const phase = velaSession && velaSession.phase === VELA_PHASE.FINAL_GAME ? "vela" : "riatra";
+    const result = recordEndgamePosition(endgameTracker, board, nextPlayer, turnHadCapture, phase);
     turnHadCapture = false;
     return result;
   }
@@ -79,8 +80,8 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
     turnContext = null;
     hideMoveChoice();
     if (stopCaptureButton) stopCaptureButton.hidden = true;
-    const reason = result.reason === "low-material-no-capture"
-      ? "Vato 1 manoloana 5 no tavela ary tsy misy fakana ara-dalàna azon'ny andaniny roa atao."
+    const reason = result.reason === "one-vs-five"
+      ? "Vato 1 manoloana 5 no tavela amin'ny Riatra; ajanona ny lalao mba tsy hifamezivezy fotsiny."
       : result.reason === "repetition"
         ? "Niverina in-telo ny toerana mitovy sy ny anjaran'ny mpilalao."
         : "Tsy nisy fakana vato nandritra ny hetsika 60.";
@@ -318,7 +319,7 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
       velaSession = completeVela(velaSession, false);
       gameOver = true;
       setMessage("SAHALA NY VELA BE: " +
-        (velaDraw.reason === "low-material" ? "vato telo sy roa sisa no tavela." :
+        (velaDraw.reason === "vela-three-vs-two" ? "vato telo sy roa sisa no tavela; izany no fiafaran'ny Vela be." :
           velaDraw.reason === "repetition" ? "miverimberina ny toerana ka tsy misy fandrosoana." :
             "tsy nisy fakana vato nandritra ny hetsika 60.") +
         " Tsy afa-bela ilay mpilalao Vela. Mahazo isa 3 fanampiny ny mpandresy Riatra. Vokatra 8–0.");
