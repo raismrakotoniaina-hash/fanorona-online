@@ -7,7 +7,7 @@ Misy fomba filalaovana roa: **miady amin'ny AI** na **olona roa mifandimby amin'
 
 Misy formulaire handefasana hevitra momba ny lalao sy ny fifaninanana. Manokatra ny application email an'ny mpilalao izy, ka tsy mitahiry na mandefa hafatra ho azy ny tranonkala raha tsy tsindrin'ny mpilalao ny Send ao amin'ny email-ny.
 
-Mbola tsy misy kaonty, multiplayer amin'ny Internet, na fitahirizana tantara sy hafatra amin'ny server. Tsy tokony hambara ho efa vonona ny fifaninanana lehibe raha tsy vita ny fanamarinana sy ny rafitra ilaina.
+Misy dingana voalohany amin'ny Supabase ho an'ny kaonty mpilalao, famoronana/fidirana efitra amin'ny kaody, ary chat tehirizina sy havaozina amin'ny Realtime. Ny fampifanarahana ny hetsika eo amin'ny solaitrabe, ny fanamarinana hetsika amin'ny server, ny audio/video, ary ny fiarovana feno amin'ny fifaninanana dia mbola tsy vita. Tsy tokony hambara ho efa vonona ny multiplayer feno na ny fifaninanana lehibe raha tsy voasedra ireo.
 
 ## Hijery sy hanandrana
 - Lalao: https://raismrakotoniaina-hash.github.io/fanorona-online/
@@ -24,7 +24,7 @@ Mbola tsy misy kaonty, multiplayer amin'ny Internet, na fitahirizana tantara sy 
 1. Hamafiso ny fiafaran'ny lalao sy ny fitsipika manokana Riatra/Vela.
 2. Andramo amin'ny finday ny safidy loko, ny zoom, ny AI ary ny lalao eo amin'ny écran iray.
 3. Hatsarao tsikelikely ny AI sy ny fitsapana amin'ny toe-javatra sarotra.
-4. Ampidiro backend, kaonty, multiplayer ary tantaran'ny lalao.
+4. Ampifandraiso sy andramo ny Supabase Auth, ny efitra sy chat; avy eo ampifanaraho amin'ny fomba azo antoka ny hetsika eo amin'ny solaitrabe.
 5. Angony ny hevitra sy ny mpilalao liana, ary omanina ny rafitra fifaninanana.
 6. Diniho ny lalàna sy ny saram-pandoavana alohan'ny hampidirana saram-pidirana na loka.
 
