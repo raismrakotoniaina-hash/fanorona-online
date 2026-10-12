@@ -79,8 +79,8 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
     turnContext = null;
     hideMoveChoice();
     if (stopCaptureButton) stopCaptureButton.hidden = true;
-    const reason = result.reason === "low-material"
-      ? "Vato telo sy roa sisa no tavela; raisina ho sahala ny lalao."
+    const reason = result.reason === "low-material-no-capture"
+      ? "Vato 1 manoloana 5 no tavela ary tsy misy fakana ara-dalàna azon'ny andaniny roa atao."
       : result.reason === "repetition"
         ? "Niverina in-telo ny toerana mitovy sy ny anjaran'ny mpilalao."
         : "Tsy nisy fakana vato nandritra ny hetsika 60.";
