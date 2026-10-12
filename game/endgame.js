@@ -29,18 +29,18 @@ export function recordEndgamePosition(tracker, board, nextPlayer, capturedThisTu
     return result;
   }, { light: 0, dark: 0 });
 
-  // Amin'ny Riatra, 1 manoloana 5 dia raisina ho sahala avy hatrany
-  // raha tsy misy fakana ara-dalàna azon'ny andaniny roa atao amin'io toerana io.
+  // Riatra: amin'ny toe-javatra 1 manoloana 5 dia ajanona avy hatrany,
+  // satria tsy tohizana amin'ny fifamezivezena tsy misy fiafarana ilay lalao.
   const low = Math.min(counts.light, counts.dark);
   const high = Math.max(counts.light, counts.dark);
-  if (low === 1 && high === 5) {
-    const lightCanCapture = allLegalMoves(board, "light").some(move => move.capture);
-    const darkCanCapture = allLegalMoves(board, "dark").some(move => move.capture);
-    if (!lightCanCapture && !darkCanCapture) return { reason: "low-material-no-capture", counts };
-  }
+  if (low === 1 && high === 5) return { reason: "one-vs-five", counts };
 
   // Tsy mamarana lalao amin'ny isan'ny vato fotsiny: ny toerana sy ny
   // fiverimberenan'ny lalao no jerena, mba tsy hampitsahatra 3-4 na 5-3 an-jambany.
+  // Vela be, dingana faharoa: rehefa vato 3 sy 2 sisa no tavela,
+  // raisina ho sahala ny Vela; tsy ampiharina amin'ny Riatra ny fepetra isa 3-2.
+  if (low === 2 && high === 3) return { reason: "vela-three-vs-two", counts };
+
   if (occurrences >= REPETITION_LIMIT) return { reason: "repetition", counts };
   if (tracker.quietTurns >= MAX_QUIET_TURNS) return { reason: "no-capture-limit", counts };
   return null;
