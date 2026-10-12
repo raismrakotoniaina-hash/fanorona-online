@@ -71,6 +71,8 @@ import { chooseAiMove } from "./game/ai.js";
   let humanPlayer = LIGHT;
   let boardZoom = 1;
   let aiMoveScheduled = false;
+  let aiPreviewMove = null;
+  let aiScheduleToken = 0;
 
   if (year) year.textContent = String(new Date().getFullYear());
   resetEndgameTracker(endgameTracker, board, turn);
@@ -199,6 +201,8 @@ import { chooseAiMove } from "./game/ai.js";
       node.setAttribute("aria-label", pointLabel(i) + (board[i] ? ", vato " + (board[i] === LIGHT ? "fotsy" : "mainty") : ", foana"));
       node.setAttribute("aria-pressed", String(selected === i));
       if (selected === i) node.classList.add("is-selected");
+      if (aiPreviewMove && aiPreviewMove.from === i) node.classList.add("ai-preview-from");
+      if (aiPreviewMove && aiPreviewMove.to === i) node.classList.add("ai-preview-to");
       if (selected !== null && availableMoves(selected).some(m => m.to === i)) node.classList.add("is-legal");
       node.addEventListener("click", () => handlePoint(i));
     }
@@ -253,10 +257,15 @@ import { chooseAiMove } from "./game/ai.js";
   function scheduleAiMove() {
     if (!isAiTurn() || gameOver || aiMoveScheduled) return;
     aiMoveScheduled = true;
+    const token = ++aiScheduleToken;
+    aiPreviewMove = null;
     setMessage("Mandinika ny hetsika mety indrindra ny AI…");
+    // Fotoana fohy hieritreretana aloha, mba tsy ho toy ny milina mamaly avy hatrany.
     window.setTimeout(() => {
-      aiMoveScheduled = false;
-      if (!isAiTurn() || gameOver) return;
+      if (token !== aiScheduleToken || !isAiTurn() || gameOver) {
+        if (token === aiScheduleToken) aiMoveScheduled = false;
+        return;
+      }
       let move = null;
       if (velaSession && velaSession.phase === VELA_PHASE.OFFERING) {
         const options = turn === velaSession.riatraWinner
@@ -266,9 +275,39 @@ import { chooseAiMove } from "./game/ai.js";
       } else {
         move = chooseAiMove(board, turn, turnContext, 2);
       }
-      if (move) commitMove(move);
-      else completeTurn();
-    }, 180);
+      if (!move) {
+        aiMoveScheduled = false;
+        completeTurn();
+        return;
+      }
+
+      // Asehoy mialoha ny fiandohana sy ny fiafaran'ny fihetsika.
+      // Ny mpilalao dia mahazo fotoana hahitana ny lalana alohan'ny hifindran'ny vato.
+      aiPreviewMove = move;
+      renderBoard();
+      const from = coordinates(move.from);
+      const to = coordinates(move.to);
+      const route = "AI: (" + (from.row + 1) + "," + (from.col + 1) + ") → (" +
+        (to.row + 1) + "," + (to.col + 1) + "). ";
+      const captureText = move.capture
+        ? "Maka vato " + move.victims.length + " izy."
+        : "Mamindra vato izy.";
+      setMessage(route + captureText);
+      const pause = move.capture ? 1050 + Math.min(move.victims.length, 4) * 220 : 850;
+      window.setTimeout(() => {
+        if (token !== aiScheduleToken || !isAiTurn() || gameOver) {
+          if (token === aiScheduleToken) {
+            aiPreviewMove = null;
+            aiMoveScheduled = false;
+            renderBoard();
+          }
+          return;
+        }
+        aiPreviewMove = null;
+        aiMoveScheduled = false;
+        commitMove(move);
+      }, pause);
+    }, 500);
   }
 
   function updateBoardZoom() {
@@ -691,6 +730,9 @@ import { chooseAiMove } from "./game/ai.js";
   });
 
   if (resetButton) resetButton.addEventListener("click", () => {
+    aiScheduleToken += 1;
+    aiMoveScheduled = false;
+    aiPreviewMove = null;
     hideMoveChoice();
     board = initialBoard();
     turn = LIGHT;
