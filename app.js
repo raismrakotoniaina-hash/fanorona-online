@@ -10,12 +10,20 @@ import {
   createVelaBoard, legalOfferMoves, legalVelaCaptures, applyVelaOffer, applyVelaCapture
 } from "./game/vela-board.js";
 import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, createMatchClock, DEFAULT_PLAYER_TIME_MS, startClockTurn, getClockRemaining, stopClockTurn, formatClock } from "./game/endgame.js";
+import { chooseAiMove } from "./game/ai.js";
 
 (() => {
   "use strict";
   const boardEl = document.getElementById("game-board");
   const decorBoard = document.getElementById("decor-board");
   const resetButton = document.getElementById("reset-board");
+  const gameModeSelect = document.getElementById("game-mode");
+  const humanColorSelect = document.getElementById("human-color");
+  const zoomInButton = document.getElementById("zoom-in");
+  const zoomOutButton = document.getElementById("zoom-out");
+  const zoomResetButton = document.getElementById("zoom-reset");
+  const feedbackForm = document.getElementById("feedback-form");
+  const feedbackStatus = document.getElementById("feedback-status");
   const stopCaptureButton = document.getElementById("stop-capture");
   const message = document.getElementById("board-message");
   const year = document.getElementById("year");
@@ -60,6 +68,9 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
   const matchClock = createMatchClock();
   let clockInterval = null;
   let turnHadCapture = false;
+  let humanPlayer = LIGHT;
+  let boardZoom = 1;
+  let aiMoveScheduled = false;
 
   if (year) year.textContent = String(new Date().getFullYear());
   resetEndgameTracker(endgameTracker, board, turn);
@@ -163,6 +174,7 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
     startClockTurn(matchClock, turn);
     if (clockInterval === null) clockInterval = setInterval(updateRiatraTimer, 250);
     updateRiatraTimer();
+    scheduleAiMove();
   }
 
   function stopClockForMove() {
@@ -227,10 +239,43 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
       decorBoard.replaceChildren();
       for (let i = 0; i < ROWS * COLS; i += 1) decorBoard.appendChild(makeNode(i, true));
     }
+    updateBoardZoom();
   }
 
   function setMessage(text) {
     if (message) message.textContent = text;
+  }
+
+  function isAiTurn() {
+    return Boolean(gameModeSelect && gameModeSelect.value === "ai" && turn !== humanPlayer);
+  }
+
+  function scheduleAiMove() {
+    if (!isAiTurn() || gameOver || aiMoveScheduled) return;
+    aiMoveScheduled = true;
+    setMessage("Mandinika ny hetsika mety indrindra ny AI…");
+    window.setTimeout(() => {
+      aiMoveScheduled = false;
+      if (!isAiTurn() || gameOver) return;
+      let move = null;
+      if (velaSession && velaSession.phase === VELA_PHASE.OFFERING) {
+        const options = turn === velaSession.riatraWinner
+          ? legalOfferMoves(board, velaSession.riatraWinner, velaSession.velaPlayer)
+          : legalVelaCaptures(board, velaSession.velaPlayer);
+        if (options.length) move = options[0];
+      } else {
+        move = chooseAiMove(board, turn, turnContext, 2);
+      }
+      if (move) commitMove(move);
+      else completeTurn();
+    }, 180);
+  }
+
+  function updateBoardZoom() {
+    if (!boardEl) return;
+    boardEl.style.width = (boardZoom * 100) + "%";
+    boardEl.style.minWidth = boardZoom > 1 ? (boardZoom * 100) + "%" : "0";
+    if (zoomResetButton) zoomResetButton.textContent = Math.round(boardZoom * 100) + "%";
   }
 
   function renderVelaPanel() {
@@ -492,6 +537,7 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
         if (!gameOver) startRiatraTimerIfNeeded();
         renderVelaPanel();
         renderBoard();
+        scheduleAiMove();
       } catch (error) {
         setMessage(error.message);
       }
@@ -605,6 +651,43 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
     return; // Ny vokatra dia faritan’ny lalao eo amin’ny solaitrabe.
   });
 
+  if (gameModeSelect) gameModeSelect.addEventListener("change", () => {
+    if (resetButton) resetButton.click();
+    scheduleAiMove();
+  });
+  if (humanColorSelect) humanColorSelect.addEventListener("change", () => {
+    humanPlayer = humanColorSelect.value === "dark" ? DARK : LIGHT;
+    if (resetButton) resetButton.click();
+    scheduleAiMove();
+  });
+  if (zoomInButton) zoomInButton.addEventListener("click", () => {
+    boardZoom = Math.min(1.8, Math.round((boardZoom + 0.2) * 10) / 10);
+    updateBoardZoom();
+  });
+  if (zoomOutButton) zoomOutButton.addEventListener("click", () => {
+    boardZoom = Math.max(0.8, Math.round((boardZoom - 0.2) * 10) / 10);
+    updateBoardZoom();
+  });
+  if (zoomResetButton) zoomResetButton.addEventListener("click", () => {
+    boardZoom = 1;
+    updateBoardZoom();
+  });
+
+  if (feedbackForm) feedbackForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const name = (document.getElementById("feedback-name")?.value || "").trim();
+    const topic = document.getElementById("feedback-topic")?.value || "Hevitra ankapobeny";
+    const body = (document.getElementById("feedback-message")?.value || "").trim();
+    if (!body) {
+      if (feedbackStatus) feedbackStatus.textContent = "Ampidiro aloha ny hafatrao.";
+      return;
+    }
+    const subject = "[Fanorona Online] " + topic;
+    const content = "Lohahevitra: " + topic + "\nAnarana: " + (name || "Tsy nomena") + "\n\nHafatra:\n" + body;
+    if (feedbackStatus) feedbackStatus.textContent = "Hisokatra ny email-nao. Tsindrio Send ao amin’ny application email mba handefasana azy.";
+    window.location.href = "mailto:4ndevcontact@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(content);
+  });
+
   if (resetButton) resetButton.addEventListener("click", () => {
     hideMoveChoice();
     board = initialBoard();
@@ -629,5 +712,6 @@ import { createEndgameTracker, resetEndgameTracker, recordEndgamePosition, creat
 
   renderBoard();
   renderVelaPanel();
-  setMessage("Lalao fanazarana. Anjaran'ny vato fotsy. Tsy maintsy maka vato raha misy.");
+  setMessage("Lalao vaovao. Safidio ny loko sy ny fomba filalaovana. Tsy maintsy maka vato raha misy.");
+  scheduleAiMove();
 })();
