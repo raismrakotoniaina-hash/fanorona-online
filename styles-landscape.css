@@ -72,6 +72,3 @@
   .game-aside .feature-line { padding: 5px 0; }
 }
 
-@media screen and (orientation: portrait) {
-  .hero, .stats { display: revert; }
-}
