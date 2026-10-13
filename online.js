@@ -133,10 +133,24 @@ async function openRoom(room) {
   }
   roomChannel = supabase.channel("fanorona-room-" + room.id)
     .on("postgres_changes", { event: "UPDATE", schema: "public", table: "game_rooms", filter: "id=eq." + room.id }, (payload) => {
-      currentRoom = payload.new;
-      renderRoom();
+      const previousRevision = Number(currentRoom?.game_state?.revision || 0);
       const state = payload.new.game_state;
       if (state?.online && Array.isArray(state.board) && window.fanoronaGame) {
+        const incomingRevision = Number(state.revision || 0);
+        const isOwnUpdate = state.updatedBy === currentUser?.id || state.startedBy === currentUser?.id;
+
+        // Aza avela hamerina ny solaitrabe amin'ny state tranainy ny UPDATE
+        // tara rehefa efa nisy hetsika vaovao kokoa teo amin'ny mpilalao roa.
+        if (onlineGameActive && incomingRevision < previousRevision && !isOwnUpdate) return;
+
+        // Raha avy amin'ny mpifanandrina ilay state, ny state voatahiry no
+        // tokony handresy ny hetsika mbola miandry avy amin'ny solaitrabe teo aloha.
+        if (onlineGameActive && !isOwnUpdate && pendingGameSnapshot) {
+          pendingGameSnapshot = null;
+        }
+
+        currentRoom = payload.new;
+        renderRoom();
         const incoming = JSON.stringify(state);
         const incomingSignature = boardSignature(state);
         const color = payload.new.host_id === currentUser?.id ? "light" : "dark";
@@ -148,9 +162,12 @@ async function openRoom(room) {
           document.getElementById("lalao")?.scrollIntoView({ behavior: "smooth", block: "start" });
         }
         const localSignature = boardSignature(window.fanoronaGame.snapshot());
-        lastBoardSignature = incomingSignature;
         if (incomingSignature !== localSignature) window.fanoronaGame.applyRemoteState(state);
+        lastBoardSignature = incomingSignature;
         lastPublishedGameState = incoming;
+      } else {
+        currentRoom = payload.new;
+        renderRoom();
       }
     })
     .subscribe();
