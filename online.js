@@ -80,10 +80,21 @@ function renderRoom() {
   roomPanel.hidden = !currentRoom;
   if (!currentRoom) return;
   if (roomCodeDisplay) roomCodeDisplay.textContent = currentRoom.room_code;
-  setRoomStatus(currentRoom.status === "playing"
+  const roomReady = currentRoom.status === "playing";
+  setRoomStatus(roomReady
     ? "Mpilalao roa no tafiditra. Efitra vonona."
-    : "Miandry mpilalao faharoa…");
-  if (startGameButton) startGameButton.hidden = currentRoom.status !== "playing";
+    : "Miandry mpilalao faharoa… Rehefa tafiditra izy dia afaka manomboka.");
+  // Asehoy foana ny bokotra rehefa misy efitra; tsy alefa raha mbola tsy tafiditra ny mpilalao faharoa.
+  if (startGameButton) {
+    startGameButton.hidden = false;
+    startGameButton.disabled = !roomReady;
+    startGameButton.setAttribute("aria-disabled", String(!roomReady));
+  }
+  if (gameStatusEl && !onlineGameActive) {
+    gameStatusEl.textContent = roomReady
+      ? "Vonona ny efitra. Tsindrio ny bokotra hanombohana ny lalao an-tserasera."
+      : "Mbola miandry mpilalao faharoa ny efitra.";
+  }
 }
 function renderMessage(message) {
   if (!chatList) return;
