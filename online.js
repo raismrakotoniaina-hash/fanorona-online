@@ -25,6 +25,19 @@ const gameStatusEl = $("online-game-status");
 let onlineGameActive = false;
 let publishingGameState = false;
 let lastPublishedGameState = "";
+let lastBoardSignature = "";
+
+function boardSignature(state) {
+  return JSON.stringify({
+    board: state?.board,
+    turn: state?.turn,
+    gameOver: state?.gameOver,
+    turnContext: state?.turnContext,
+    velaSession: state?.velaSession,
+    velaOfferedIndex: state?.velaOfferedIndex,
+    turnHadCapture: state?.turnHadCapture
+  });
+}
 
 let currentUser = null;
 let currentRoom = null;
@@ -114,6 +127,7 @@ async function openRoom(room) {
       const state = payload.new.game_state;
       if (state?.online && Array.isArray(state.board) && window.fanoronaGame) {
         const incoming = JSON.stringify(state);
+        const incomingSignature = boardSignature(state);
         const color = payload.new.host_id === currentUser?.id ? "light" : "dark";
         if (!onlineGameActive) {
           onlineGameActive = true;
@@ -121,7 +135,10 @@ async function openRoom(room) {
           if (gameStatusEl) gameStatusEl.textContent = "Lalao an-tserasera nanomboka. Ianao milalao amin’ny vato " + (color === "light" ? "fotsy." : "mainty.");
           document.getElementById("lalao")?.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-        if (incoming !== lastPublishedGameState) window.fanoronaGame.applyRemoteState(state);
+        const localSignature = boardSignature(window.fanoronaGame.snapshot());
+        lastBoardSignature = incomingSignature;
+        if (incomingSignature !== localSignature) window.fanoronaGame.applyRemoteState(state);
+        lastPublishedGameState = incoming;
       }
     })
     .subscribe();
@@ -258,6 +275,7 @@ if (startGameButton) startGameButton.addEventListener("click", async () => {
     if (error) throw error;
     onlineGameActive = true;
     lastPublishedGameState = JSON.stringify(state);
+    lastBoardSignature = boardSignature(state);
     window.fanoronaGame.enableOnline(color);
     if (gameStatusEl) gameStatusEl.textContent = "Nanomboka ny lalao. Ianao milalao amin’ny vato " + (color === "light" ? "fotsy." : "mainty.");
     document.getElementById("lalao")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -271,8 +289,10 @@ window.addEventListener("fanorona:board-state", async (event) => {
   const snapshot = event.detail;
   if (!snapshot || !Array.isArray(snapshot.board)) return;
   const state = { ...snapshot, online: true, revision: Number(currentRoom.game_state?.revision || 0) + 1, updatedBy: currentUser.id };
+  const signature = boardSignature(state);
+  if (signature === lastBoardSignature) return;
+  lastBoardSignature = signature;
   const serialized = JSON.stringify(state);
-  if (serialized === lastPublishedGameState) return;
   publishingGameState = true;
   lastPublishedGameState = serialized;
   try {
