@@ -106,6 +106,9 @@ import { chooseAiMove } from "./game/ai.js";
       onlineColor = color === DARK ? DARK : LIGHT;
       if (gameModeSelect) gameModeSelect.value = "local";
       if (humanColorSelect) humanColorSelect.value = onlineColor === DARK ? "dark" : "light";
+      if (gameModeSelect) gameModeSelect.disabled = true;
+      if (humanColorSelect) humanColorSelect.disabled = true;
+      if (resetButton) resetButton.disabled = true;
       selected = null;
       turnContext = null;
       renderBoard();
@@ -148,6 +151,9 @@ import { chooseAiMove } from "./game/ai.js";
     },
     disableOnline() {
       onlineMode = false;
+      if (gameModeSelect) gameModeSelect.disabled = false;
+      if (humanColorSelect) humanColorSelect.disabled = false;
+      if (resetButton) resetButton.disabled = false;
       selected = null;
       turnContext = null;
       renderBoard();
