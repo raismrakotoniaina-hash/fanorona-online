@@ -183,7 +183,13 @@ if (signUpButton) signUpButton.addEventListener("click", async () => {
   setBusy(true);
   try {
     const { data, error } = await supabase.auth.signUp({
-      email, password, options: { data: { display_name: displayName } }
+      email,
+      password,
+      options: {
+        // Return confirmation links to the GitHub Pages project path, not the domain root.
+        emailRedirectTo: "https://raismrakotoniaina-hash.github.io/fanorona-online/",
+        data: { display_name: displayName }
+      }
     });
     if (error) throw error;
     if (data.session) setStatus("Vita ny kaonty ary tafiditra ianao.");
