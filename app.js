@@ -104,6 +104,8 @@ import { chooseAiMove } from "./game/ai.js";
     enableOnline(color) {
       onlineMode = true;
       onlineColor = color === DARK ? DARK : LIGHT;
+      if (gameModeSelect) gameModeSelect.value = "local";
+      if (humanColorSelect) humanColorSelect.value = onlineColor === DARK ? "dark" : "light";
       selected = null;
       turnContext = null;
       renderBoard();
