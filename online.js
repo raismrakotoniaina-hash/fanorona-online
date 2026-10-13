@@ -131,6 +131,7 @@ async function openRoom(room) {
         const color = payload.new.host_id === currentUser?.id ? "light" : "dark";
         if (!onlineGameActive) {
           onlineGameActive = true;
+          lastBoardSignature = incomingSignature;
           window.fanoronaGame.enableOnline(color);
           if (gameStatusEl) gameStatusEl.textContent = "Lalao an-tserasera nanomboka. Ianao milalao amin’ny vato " + (color === "light" ? "fotsy." : "mainty.");
           document.getElementById("lalao")?.scrollIntoView({ behavior: "smooth", block: "start" });
