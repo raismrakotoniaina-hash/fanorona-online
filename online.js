@@ -20,6 +20,11 @@ const chatForm = $("online-chat-form");
 const chatInput = $("online-chat-input");
 const chatList = $("online-chat-list");
 const roomStatusEl = $("online-room-status");
+const startGameButton = $("online-start-game");
+const gameStatusEl = $("online-game-status");
+let onlineGameActive = false;
+let publishingGameState = false;
+let lastPublishedGameState = "";
 
 let currentUser = null;
 let currentRoom = null;
@@ -65,6 +70,7 @@ function renderRoom() {
   setRoomStatus(currentRoom.status === "playing"
     ? "Mpilalao roa no tafiditra. Efitra vonona."
     : "Miandry mpilalao faharoa…");
+  if (startGameButton) startGameButton.hidden = currentRoom.status !== "playing";
 }
 function renderMessage(message) {
   if (!chatList) return;
@@ -105,6 +111,18 @@ async function openRoom(room) {
     .on("postgres_changes", { event: "UPDATE", schema: "public", table: "game_rooms", filter: "id=eq." + room.id }, (payload) => {
       currentRoom = payload.new;
       renderRoom();
+      const state = payload.new.game_state;
+      if (state?.online && Array.isArray(state.board) && window.fanoronaGame) {
+        const incoming = JSON.stringify(state);
+        const color = payload.new.host_id === currentUser?.id ? "light" : "dark";
+        if (!onlineGameActive) {
+          onlineGameActive = true;
+          window.fanoronaGame.enableOnline(color);
+          if (gameStatusEl) gameStatusEl.textContent = "Lalao an-tserasera nanomboka. Ianao milalao amin’ny vato " + (color === "light" ? "fotsy." : "mainty.");
+          document.getElementById("lalao")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        if (incoming !== lastPublishedGameState) window.fanoronaGame.applyRemoteState(state);
+      }
     })
     .subscribe();
   messageChannel = supabase.channel("fanorona-messages-" + room.id)
@@ -222,6 +240,55 @@ if (signOutButton) signOutButton.addEventListener("click", async () => {
   }
 });
 if (createRoomButton) createRoomButton.addEventListener("click", createRoom);
+
+if (startGameButton) startGameButton.addEventListener("click", async () => {
+  if (!currentUser || !currentRoom || currentRoom.status !== "playing" || busy) {
+    if (gameStatusEl) gameStatusEl.textContent = "Mila mpilalao roa ao amin’ny efitra vao manomboka.";
+    return;
+  }
+  if (!window.fanoronaGame) {
+    if (gameStatusEl) gameStatusEl.textContent = "Tsy mbola vonona ny solaitrabe. Avereno alefa ny pejy.";
+    return;
+  }
+  setBusy(true);
+  try {
+    const color = currentRoom.host_id === currentUser.id ? "light" : "dark";
+    const state = { ...window.fanoronaGame.snapshot(), online: true, revision: 1, startedBy: currentUser.id };
+    const { error } = await supabase.from("game_rooms").update({ game_state: state }).eq("id", currentRoom.id);
+    if (error) throw error;
+    onlineGameActive = true;
+    lastPublishedGameState = JSON.stringify(state);
+    window.fanoronaGame.enableOnline(color);
+    if (gameStatusEl) gameStatusEl.textContent = "Nanomboka ny lalao. Ianao milalao amin’ny vato " + (color === "light" ? "fotsy." : "mainty.");
+    document.getElementById("lalao")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (error) {
+    if (gameStatusEl) gameStatusEl.textContent = "Tsy afaka nanomboka ny lalao: " + (error.message || "Hadisoana tsy fantatra");
+  } finally { setBusy(false); }
+});
+
+window.addEventListener("fanorona:board-state", async (event) => {
+  if (!onlineGameActive || !currentRoom || !currentUser || publishingGameState) return;
+  const snapshot = event.detail;
+  if (!snapshot || !Array.isArray(snapshot.board)) return;
+  const state = { ...snapshot, online: true, revision: Number(currentRoom.game_state?.revision || 0) + 1, updatedBy: currentUser.id };
+  const serialized = JSON.stringify(state);
+  if (serialized === lastPublishedGameState) return;
+  publishingGameState = true;
+  lastPublishedGameState = serialized;
+  try {
+    const { error } = await supabase.from("game_rooms").update({ game_state: state }).eq("id", currentRoom.id);
+    if (error) {
+      lastPublishedGameState = "";
+      if (gameStatusEl) gameStatusEl.textContent = "Tsy voatahiry ny hetsika: " + error.message;
+    } else {
+      currentRoom.game_state = state;
+    }
+  } catch (error) {
+    lastPublishedGameState = "";
+    if (gameStatusEl) gameStatusEl.textContent = "Nisy olana tamin’ny fandefasana ny hetsika: " + (error.message || "Hadisoana");
+  } finally { publishingGameState = false; }
+});
+
 if (joinRoomButton) joinRoomButton.addEventListener("click", joinRoom);
 if (chatForm) chatForm.addEventListener("submit", async (event) => {
   event.preventDefault();
