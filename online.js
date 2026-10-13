@@ -282,13 +282,21 @@ if (startGameButton) startGameButton.addEventListener("click", async () => {
   setBusy(true);
   try {
     const color = currentRoom.host_id === currentUser.id ? "light" : "dark";
+    // Avereno amin'ny toerana fanombohana ara-dalàna ny lalao alohan'ny
+    // handefasana ny state voalohany amin'ny mpilalao roa.
+    window.fanoronaGame.startOnline(color);
     const state = { ...window.fanoronaGame.snapshot(), online: true, revision: 1, startedBy: currentUser.id };
-    const { error } = await supabase.from("game_rooms").update({ game_state: state }).eq("id", currentRoom.id);
+    const { data, error } = await supabase.from("game_rooms")
+      .update({ game_state: state })
+      .eq("id", currentRoom.id)
+      .select("game_state")
+      .single();
     if (error) throw error;
+    currentRoom.game_state = data?.game_state || state;
     onlineGameActive = true;
-    lastPublishedGameState = JSON.stringify(state);
-    lastBoardSignature = boardSignature(state);
-    window.fanoronaGame.enableOnline(color);
+    pendingGameSnapshot = null;
+    lastPublishedGameState = JSON.stringify(currentRoom.game_state);
+    lastBoardSignature = boardSignature(currentRoom.game_state);
     if (gameStatusEl) gameStatusEl.textContent = "Nanomboka ny lalao. Ianao milalao amin’ny vato " + (color === "light" ? "fotsy." : "mainty.");
     document.getElementById("lalao")?.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
@@ -296,29 +304,50 @@ if (startGameButton) startGameButton.addEventListener("click", async () => {
   } finally { setBusy(false); }
 });
 
-window.addEventListener("fanorona:board-state", async (event) => {
-  if (!onlineGameActive || !currentRoom || !currentUser || publishingGameState) return;
-  const snapshot = event.detail;
-  if (!snapshot || !Array.isArray(snapshot.board)) return;
-  const state = { ...snapshot, online: true, revision: Number(currentRoom.game_state?.revision || 0) + 1, updatedBy: currentUser.id };
-  const signature = boardSignature(state);
-  if (signature === lastBoardSignature) return;
-  lastBoardSignature = signature;
-  const serialized = JSON.stringify(state);
+let pendingGameSnapshot = null;
+
+async function flushPendingGameState() {
+  if (publishingGameState || !onlineGameActive || !currentRoom || !currentUser) return;
   publishingGameState = true;
-  lastPublishedGameState = serialized;
   try {
-    const { error } = await supabase.from("game_rooms").update({ game_state: state }).eq("id", currentRoom.id);
-    if (error) {
-      lastPublishedGameState = "";
-      if (gameStatusEl) gameStatusEl.textContent = "Tsy voatahiry ny hetsika: " + error.message;
-    } else {
-      currentRoom.game_state = state;
+    while (pendingGameSnapshot && onlineGameActive && currentRoom && currentUser) {
+      const snapshot = pendingGameSnapshot;
+      pendingGameSnapshot = null;
+      const state = {
+        ...snapshot,
+        online: true,
+        revision: Number(currentRoom.game_state?.revision || 0) + 1,
+        updatedBy: currentUser.id
+      };
+      const signature = boardSignature(state);
+      if (signature === lastBoardSignature) continue;
+      const { data, error } = await supabase.from("game_rooms")
+        .update({ game_state: state })
+        .eq("id", currentRoom.id)
+        .select("game_state")
+        .single();
+      if (error) {
+        pendingGameSnapshot = snapshot;
+        if (gameStatusEl) gameStatusEl.textContent = "Tsy voatahiry ny hetsika: " + error.message;
+        break;
+      }
+      currentRoom.game_state = data?.game_state || state;
+      lastBoardSignature = signature;
+      lastPublishedGameState = JSON.stringify(currentRoom.game_state);
     }
   } catch (error) {
-    lastPublishedGameState = "";
     if (gameStatusEl) gameStatusEl.textContent = "Nisy olana tamin’ny fandefasana ny hetsika: " + (error.message || "Hadisoana");
-  } finally { publishingGameState = false; }
+  } finally {
+    publishingGameState = false;
+  }
+}
+
+window.addEventListener("fanorona:board-state", (event) => {
+  if (!onlineGameActive || !currentRoom || !currentUser) return;
+  const snapshot = event.detail;
+  if (!snapshot || !Array.isArray(snapshot.board)) return;
+  pendingGameSnapshot = snapshot;
+  void flushPendingGameState();
 });
 
 if (joinRoomButton) joinRoomButton.addEventListener("click", joinRoom);
