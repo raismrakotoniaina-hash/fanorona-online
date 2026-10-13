@@ -130,7 +130,7 @@ async function createRoom() {
         room_code: makeRoomCode(),
         host_id: currentUser.id,
         status: "waiting",
-        current_turn: "light",
+        current_turn: currentUser.id,
         game_state: { board: null, turn: "light", version: 1 }
       }).select("*").single();
       room = result.data;
