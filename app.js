@@ -73,6 +73,83 @@ import { chooseAiMove } from "./game/ai.js";
   let aiMoveScheduled = false;
   let aiPreviewMove = null;
   let aiScheduleToken = 0;
+  let onlineMode = false;
+  let onlineColor = LIGHT;
+  let applyingOnlineState = false;
+
+  function getOnlineSnapshot() {
+    const now = Date.now();
+    return {
+      board: board.slice(),
+      turn,
+      gameOver,
+      turnContext: turnContext ? {
+        captured: Array.from(turnContext.captured || []),
+        visited: Array.from(turnContext.visited || []),
+        lastDirection: turnContext.lastDirection || null,
+        piece: turnContext.piece
+      } : null,
+      velaSession,
+      velaOfferedIndex,
+      turnHadCapture,
+      clockRemaining: {
+        light: getClockRemaining(matchClock, LIGHT, now),
+        dark: getClockRemaining(matchClock, DARK, now)
+      }
+    };
+  }
+
+  window.fanoronaGame = {
+    snapshot: getOnlineSnapshot,
+    enableOnline(color) {
+      onlineMode = true;
+      onlineColor = color === DARK ? DARK : LIGHT;
+      selected = null;
+      turnContext = null;
+      renderBoard();
+      setMessage("Lalao an-tserasera: anjaran’ny " + (turn === LIGHT ? "Fotsy" : "Mainty") + ".");
+    },
+    applyRemoteState(state) {
+      if (!state || !Array.isArray(state.board) || state.board.length !== ROWS * COLS) return;
+      applyingOnlineState = true;
+      try {
+        board = state.board.slice();
+        turn = state.turn === DARK ? DARK : LIGHT;
+        gameOver = Boolean(state.gameOver);
+        selected = null;
+        turnContext = state.turnContext ? {
+          captured: new Set(state.turnContext.captured || []),
+          visited: new Set(state.turnContext.visited || []),
+          lastDirection: state.turnContext.lastDirection || null,
+          piece: state.turnContext.piece
+        } : null;
+        velaSession = state.velaSession || null;
+        velaOfferedIndex = state.velaOfferedIndex ?? null;
+        turnHadCapture = Boolean(state.turnHadCapture);
+        if (state.clockRemaining) {
+          matchClock.remaining = {
+            light: Number(state.clockRemaining.light) || 0,
+            dark: Number(state.clockRemaining.dark) || 0
+          };
+        }
+        matchClock.running = false;
+        matchClock.startedAt = null;
+        if (!gameOver) startClockTurn(matchClock, turn);
+        renderVelaPanel();
+        renderBoard();
+        setMessage(gameOver ? "Tapitra ny lalao an-tserasera." : "Lalao an-tserasera — anjaran’ny " + (turn === LIGHT ? "Fotsy" : "Mainty") + ".");
+      } finally {
+        applyingOnlineState = false;
+      }
+    },
+    disableOnline() {
+      onlineMode = false;
+      selected = null;
+      turnContext = null;
+      renderBoard();
+    }
+  };
+
 
   if (year) year.textContent = String(new Date().getFullYear());
   resetEndgameTracker(endgameTracker, board, turn);
@@ -198,7 +275,7 @@ import { chooseAiMove } from "./game/ai.js";
     if ((row + col) % 2 === 0) node.classList.add("diag-strong");
     if (!decorative) {
       node.type = "button";
-      node.disabled = isAiTurn();
+      node.disabled = isAiTurn() || (onlineMode && (turn !== onlineColor || gameOver));
       node.setAttribute("aria-label", pointLabel(i) + (board[i] ? ", vato " + (board[i] === LIGHT ? "fotsy" : "mainty") : ", foana"));
       node.setAttribute("aria-pressed", String(selected === i));
       if (selected === i) node.classList.add("is-selected");
@@ -245,6 +322,9 @@ import { chooseAiMove } from "./game/ai.js";
       for (let i = 0; i < ROWS * COLS; i += 1) decorBoard.appendChild(makeNode(i, true));
     }
     updateBoardZoom();
+    if (onlineMode && !applyingOnlineState) {
+      window.dispatchEvent(new CustomEvent("fanorona:board-state", { detail: getOnlineSnapshot() }));
+    }
   }
 
   function setMessage(text) {
@@ -618,6 +698,10 @@ import { chooseAiMove } from "./game/ai.js";
 
   function handlePoint(i) {
     if (gameOver || !moveChoice.hidden) return;
+    if (onlineMode && turn !== onlineColor) {
+      setMessage("Mbola tsy anjaranao izao. Andraso ny mpilalao hafa.");
+      return;
+    }
     if (selected === null) {
       if (board[i] !== turn) {
         setMessage("Anjaran'ny vato " + (turn === LIGHT ? "fotsy" : "mainty") + ". Kitiho aloha ny vato anao.");
