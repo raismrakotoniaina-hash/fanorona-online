@@ -101,6 +101,29 @@ import { chooseAiMove } from "./game/ai.js";
 
   window.fanoronaGame = {
     snapshot: getOnlineSnapshot,
+    startOnline(color) {
+      // Manomboka amin'ny solaitrabe vaovao foana ny lalao online.
+      // Tsy tokony handova ny board/turn/gameOver tamin'ny lalao teo aloha.
+      stopRiatraTimer();
+      board = initialBoard();
+      turn = LIGHT;
+      selected = null;
+      turnContext = null;
+      gameOver = false;
+      velaSession = null;
+      velaOfferedIndex = null;
+      turnHadCapture = false;
+      aiMoveScheduled = false;
+      aiPreviewMove = null;
+      resetEndgameTracker(endgameTracker, board, turn);
+      matchClock.remaining = { light: DEFAULT_PLAYER_TIME_MS, dark: DEFAULT_PLAYER_TIME_MS };
+      matchClock.activePlayer = null;
+      startClockTurn(matchClock, turn);
+      if (clockInterval === null) clockInterval = setInterval(updateRiatraTimer, 250);
+      this.enableOnline(color);
+      renderVelaPanel();
+      setMessage("Lalao an-tserasera vaovao. Anjaran'ny vato fotsy.");
+    },
     enableOnline(color) {
       onlineMode = true;
       onlineColor = color === DARK ? DARK : LIGHT;
