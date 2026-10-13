@@ -306,9 +306,12 @@ if (startGameButton) startGameButton.addEventListener("click", async () => {
 
 let pendingGameSnapshot = null;
 
+let gameStateRetryCount = 0;
+
 async function flushPendingGameState() {
   if (publishingGameState || !onlineGameActive || !currentRoom || !currentUser) return;
   publishingGameState = true;
+  let retryNeeded = false;
   try {
     while (pendingGameSnapshot && onlineGameActive && currentRoom && currentUser) {
       const snapshot = pendingGameSnapshot;
@@ -321,24 +324,38 @@ async function flushPendingGameState() {
       };
       const signature = boardSignature(state);
       if (signature === lastBoardSignature) continue;
-      const { data, error } = await supabase.from("game_rooms")
+      const { error } = await supabase.from("game_rooms")
         .update({ game_state: state })
-        .eq("id", currentRoom.id)
-        .select("game_state")
-        .single();
+        .eq("id", currentRoom.id);
       if (error) {
+        // Tazomy ilay hetsika ary andramo indray; aza avela hihitsoka mangina
+        // ny mpilalao iray raha sendra tapaka vetivety ny fifandraisana.
         pendingGameSnapshot = snapshot;
-        if (gameStatusEl) gameStatusEl.textContent = "Tsy voatahiry ny hetsika: " + error.message;
+        gameStateRetryCount += 1;
+        if (gameStatusEl) gameStatusEl.textContent =
+          "Mbola tsy voatahiry ny hetsika (" + gameStateRetryCount + "/3): " + error.message;
+        retryNeeded = gameStateRetryCount < 3;
         break;
       }
-      currentRoom.game_state = data?.game_state || state;
+      gameStateRetryCount = 0;
+      currentRoom.game_state = state;
       lastBoardSignature = signature;
-      lastPublishedGameState = JSON.stringify(currentRoom.game_state);
+      lastPublishedGameState = JSON.stringify(state);
+      if (gameStatusEl) gameStatusEl.textContent =
+        "Hetsika voatahiry. Anjaran’ny " + (state.turn === "light" ? "Fotsy." : "Mainty.");
     }
   } catch (error) {
-    if (gameStatusEl) gameStatusEl.textContent = "Nisy olana tamin’ny fandefasana ny hetsika: " + (error.message || "Hadisoana");
+    gameStateRetryCount += 1;
+    retryNeeded = gameStateRetryCount < 3;
+    if (gameStatusEl) gameStatusEl.textContent =
+      "Nisy olana tamin’ny fandefasana ny hetsika (" + gameStateRetryCount + "/3): " + (error.message || "Hadisoana");
   } finally {
     publishingGameState = false;
+  }
+  if (retryNeeded && pendingGameSnapshot && onlineGameActive) {
+    setTimeout(() => { void flushPendingGameState(); }, 700);
+  } else if (gameStateRetryCount >= 3 && pendingGameSnapshot && gameStatusEl) {
+    gameStatusEl.textContent += " — Avereno ny fifandraisana na mamoròna efitra vaovao.";
   }
 }
 
