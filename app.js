@@ -115,6 +115,8 @@ import { chooseAiMove } from "./game/ai.js";
       if (!state || !Array.isArray(state.board) || state.board.length !== ROWS * COLS) return;
       applyingOnlineState = true;
       try {
+        hideMoveChoice();
+        if (stopCaptureButton) stopCaptureButton.hidden = true;
         board = state.board.slice();
         turn = state.turn === DARK ? DARK : LIGHT;
         gameOver = Boolean(state.gameOver);
@@ -601,6 +603,11 @@ import { chooseAiMove } from "./game/ai.js";
   }
 
   function commitMove(move) {
+    if (onlineMode && turn !== onlineColor) {
+      hideMoveChoice();
+      setMessage("Mbola tsy anjaranao izao. Andraso ny mpilalao hafa.");
+      return;
+    }
     if (gameOver) {
       hideMoveChoice();
       return;
